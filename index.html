@@ -91,7 +91,7 @@
   .state[data-s="think"] { border-color: var(--warn); } .state[data-s="think"] .dot { background: var(--warn); }
   .state[data-s="away"], .state[data-s="sleepy"], .state[data-s="screen"] { border-color: var(--bad); }
   .state[data-s="away"] .dot, .state[data-s="sleepy"] .dot, .state[data-s="screen"] .dot { background: var(--bad); }
-  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 520px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; width: 100%; max-width: 620px; }
   .stat { border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
   .stat b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
   .stat span { font-size: .8rem; color: var(--muted); }
@@ -133,12 +133,89 @@
   .qr svg, .qr img { display: block; width: 100%; height: auto; }
   .url { font-size: .85rem; color: var(--muted); overflow-wrap: anywhere; user-select: all; }
 
+  /* 내 우주 */
+  .universe { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; margin-bottom: 16px; }
+  .space { position: relative; border-radius: 20px; overflow: hidden; background: #0b1020; aspect-ratio: 16 / 9; max-width: 100%; }
+  .space canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .uni-info { display: grid; gap: 10px; align-content: start; }
+  .uni-info .bar { height: 14px; }
+  .wallet { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .wallet div { border: 1px solid var(--line); border-radius: 14px; padding: 8px 10px; display: grid; }
+  .wallet b { font-family: var(--display); font-weight: 400; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+  .wallet span { font-size: .78rem; color: var(--muted); }
+  .points-line { font-family: var(--display); font-size: 1.25rem; color: var(--accent); }
+
+  /* 탭 · 머리 */
+  .head-right { display: flex; gap: 10px; align-items: center; }
+  .me { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-size: 1.05rem; background: var(--panel); color: var(--ink); border: 2px solid var(--line); border-radius: 999px; padding: 2px 14px 2px 2px; min-height: 44px; }
+  .me svg { width: 40px; height: 40px; border-radius: 50%; background: var(--bg); }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tabs button { font-size: 1.05rem; min-height: 44px; padding: 6px 18px; background: var(--panel); color: var(--ink); border: 2px solid var(--line); }
+  .tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  input[type="text"] { font: inherit; color: var(--ink); background: var(--panel); border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; width: 100%; min-width: 0; }
+  input[type="text"]:focus-visible { outline: 3px solid var(--warn); outline-offset: 2px; }
+
+  /* 펫 */
+  .pets { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; }
+  .dex-panel { grid-column: 1 / -1; }
+  .partner { display: grid; grid-template-columns: minmax(0, 210px) minmax(0, 1fr); gap: 18px; align-items: center; }
+  .pet-stage { background: radial-gradient(circle at 50% 75%, var(--line), var(--panel) 70%); border-radius: 20px; aspect-ratio: 1; display: grid; place-items: center; max-width: 100%; }
+  .pet-stage svg { width: 92%; height: auto; }
+  .partner-info { display: grid; gap: 10px; min-width: 0; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .eggs { display: grid; gap: 12px; align-content: start; }
+  .tickets { font-family: var(--display); font-weight: 400; font-size: 1.4rem; }
+  .egg-list { display: grid; gap: 10px; }
+  .egg-row { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 12px; align-items: center; border-top: 1px solid var(--line); padding-top: 10px; }
+  .egg-row svg { width: 60px; height: 60px; }
+  .egg-row .bar { height: 10px; }
+  .dex { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; margin-top: 10px; }
+  .dex button { display: grid; gap: 2px; justify-items: center; background: var(--bg); color: var(--ink); border: 2px solid var(--line); border-radius: 16px; padding: 10px 6px; font-family: var(--body); font-size: .85rem; min-height: 0; }
+  .dex button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .dex button:disabled { cursor: default; opacity: 1; }
+  .dex svg { width: 76px; height: 76px; }
+  .dex .r { font-size: .72rem; color: var(--muted); }
+  .dex .unknown { font-family: var(--display); font-size: 2.6rem; color: var(--muted); width: 76px; height: 76px; display: grid; place-items: center; }
+  .big-emoji svg { width: 160px; height: 160px; }
+
+  /* 공부 중 응원 */
+  .buddy { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 560px; }
+  .buddy-art { flex: none; }
+  .buddy-art svg { width: 76px; height: 76px; display: block; }
+  .bubble { background: var(--bg); border: 2px solid var(--line); border-radius: 18px; padding: 10px 16px; text-align: left; flex: 1; min-width: 0; font-size: 1.05rem; }
+
+  /* 아바타 */
+  .avatar-view { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 16px; }
+  .avatar-preview { display: grid; justify-items: center; gap: 10px; align-content: start; }
+  .avatar-big svg { width: min(260px, 100%); height: auto; display: block; }
+  .nick { font-family: var(--display); font-weight: 400; font-size: 1.6rem; overflow-wrap: anywhere; text-align: center; }
+  .avatar-edit, .avatar-opts { display: grid; gap: 14px; align-content: start; }
+  .opt-group { display: grid; gap: 6px; }
+  .opt-group > span { font-size: .9rem; color: var(--muted); }
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opts button { font-family: var(--body); font-size: .92rem; min-height: 44px; padding: 6px 14px; background: var(--panel); color: var(--ink); border: 2px solid var(--line); border-radius: 12px; }
+  .opts button.sw { width: 44px; padding: 0; border-radius: 50%; }
+  .opts button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+
+  /* 점수 알림 */
+  .toast {
+    position: fixed; z-index: 30; left: 50%; transform: translateX(-50%);
+    top: calc(env(safe-area-inset-top, 0px) + 14px);
+    background: var(--panel); color: var(--ink); border: 2px solid var(--accent); border-radius: 999px;
+    padding: 8px 20px; font-family: var(--display); font-size: 1.15rem; box-shadow: 0 6px 20px rgba(0,0,0,.18);
+    max-width: calc(100% - 32px); text-align: center;
+  }
+
   /* 태블릿 터치 다듬기 */
   button, select, label { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   button { user-select: none; -webkit-user-select: none; }
 
   @media (max-width: 820px) and (orientation: portrait), (max-width: 700px) {
-    .setup, .calib, .session, .result { grid-template-columns: minmax(0, 1fr); }
+    .setup, .calib, .session, .result, .universe, .pets, .avatar-view { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .partner { grid-template-columns: minmax(0, 1fr); }
+    .pet-stage { width: min(220px, 100%); justify-self: center; }
   }
   @media (max-width: 480px) { .sum-row { grid-template-columns: minmax(0, 1fr); } }
   @media (prefers-reduced-motion: no-preference) { .bar > i { transition: width .1s linear; } .state, .state .dot { transition: border-color .3s, background .3s; } }
@@ -147,8 +224,28 @@
 <body>
 <header>
   <h1>공부 지킴이</h1>
-  <button id="shareBtn" type="button" class="ghost small-btn">📲 친구에게 공유</button>
+  <div class="head-right">
+    <button id="meBadge" type="button" class="me" aria-label="내 아바타 꾸미기"></button>
+    <button id="shareBtn" type="button" class="ghost small-btn">📲 친구에게 공유</button>
+  </div>
 </header>
+
+<nav class="tabs" id="tabs" aria-label="화면 고르기">
+  <button type="button" data-v="vSetup" aria-selected="true">📚 공부하기</button>
+  <button type="button" data-v="vPets" aria-selected="false">🥚 펫</button>
+  <button type="button" data-v="vAvatar" aria-selected="false">🧑 내 아바타</button>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<div class="modal" id="lvModal" hidden role="dialog" aria-modal="true" aria-labelledby="lvTitle">
+  <div class="panel sheet">
+    <div class="big-emoji" id="lvEmoji">🌍</div>
+    <h2 id="lvTitle">레벨 업!</h2>
+    <p id="lvText"></p>
+    <div class="row" style="justify-content:center"><button id="lvClose" type="button">좋아요!</button></div>
+  </div>
+</div>
 
 <div class="modal" id="shareModal" hidden role="dialog" aria-modal="true" aria-labelledby="shareTitle">
   <div class="panel sheet">
@@ -165,6 +262,26 @@
 
 <!-- 숨겨진 카메라: 여러 화면이 같이 씀 -->
 <video id="video" playsinline muted hidden></video>
+
+<!-- 내 우주 (5단계) -->
+<section id="vUniverse" class="universe">
+  <div class="space"><canvas id="uniCanvas" role="img" aria-label="내 우주 그림"></canvas></div>
+  <div class="panel uni-info">
+    <div class="row" style="justify-content:space-between">
+      <h2 id="uniLevel">Lv.1</h2>
+      <span class="chip" id="uniStage">🪨 소행성</span>
+    </div>
+    <div class="bar"><i id="uniBar"></i></div>
+    <p class="small muted" id="uniNext">다음 레벨까지 4점</p>
+    <div class="wallet">
+      <div><b id="wToday">0/180</b><span>오늘 점수</span></div>
+      <div><b id="wTickets">0장</b><span>🎟️ 티켓</span></div>
+      <div><b id="wTotal">0점</b><span>모은 점수</span></div>
+    </div>
+    <p class="small muted" id="uniHint"></p>
+    <p class="small muted">진짜 공부 1분 = 1점 · 10점마다 티켓 1장 · 하루 최대 180점</p>
+  </div>
+</section>
 
 <!-- 1. 준비 -->
 <section id="vSetup" class="setup">
@@ -220,6 +337,59 @@
   </div>
 </section>
 
+<!-- 펫 (6단계) -->
+<section id="vPets" class="pets" hidden>
+  <div class="panel partner">
+    <div class="pet-stage" id="partnerArt"></div>
+    <div class="partner-info">
+      <div class="row" style="justify-content:space-between">
+        <h2 id="partnerName">아직 펫이 없어요</h2>
+        <span class="chip" id="partnerRarity" hidden></span>
+      </div>
+      <p class="small muted" id="partnerDesc"></p>
+      <div class="bar"><i id="partnerBar"></i></div>
+      <p class="small muted" id="partnerNext"></p>
+      <div class="two">
+        <label for="petNameInput">이름 바꾸기<input type="text" id="petNameInput" maxlength="8" autocomplete="off"></label>
+        <label for="personality">응원 말투
+          <select id="personality">
+            <option value="kind">😊 다정한</option>
+            <option value="brave">💪 씩씩한</option>
+            <option value="playful">😜 장난꾸러기</option>
+            <option value="strict">🧐 엄격한</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="panel eggs">
+    <h2>🥚 알</h2>
+    <p class="small muted">티켓 3장으로 알 1개를 살 수 있어요. 알을 품고 30분 공부하면 부화해요!</p>
+    <div class="row" style="justify-content:space-between">
+      <b id="ticketCount" class="tickets">🎟️ 0장</b>
+      <button id="buyEgg" type="button" class="small-btn">알 사기 (티켓 3장)</button>
+    </div>
+    <div id="eggList" class="egg-list"></div>
+  </div>
+  <div class="panel dex-panel">
+    <h2>📖 펫 도감 <span class="small muted" id="dexCount"></span></h2>
+    <p class="small muted">펫을 누르면 같이 공부할 짝꿍으로 정해요. 짝꿍은 함께 공부할수록 진화해요.</p>
+    <div class="dex" id="dex"></div>
+  </div>
+</section>
+
+<!-- 아바타 (6단계) -->
+<section id="vAvatar" class="avatar-view" hidden>
+  <div class="panel avatar-preview">
+    <div id="avatarArt" class="avatar-big"></div>
+    <b id="avatarNick" class="nick">닉네임을 정해 주세요</b>
+  </div>
+  <div class="panel avatar-edit">
+    <label for="nickInput">닉네임 (실명 말고 별명으로!)<input type="text" id="nickInput" maxlength="10" placeholder="예: 공부왕별이" autocomplete="off"></label>
+    <div id="avatarOpts" class="avatar-opts"></div>
+  </div>
+</section>
+
 <!-- 2. 자세 알려주기 -->
 <section id="vCalib" class="calib" hidden>
   <div class="cam" id="calibCam"><span class="tag">내 모습</span></div>
@@ -240,10 +410,12 @@
     <span class="label">진짜 공부 시간</span>
     <div class="time" id="focusTime">00:00</div>
     <div class="state" id="stateBox" data-s="focus"><span class="dot"></span><span id="stateTxt">집중하고 있어요</span></div>
+    <div class="buddy"><div id="buddyArt" class="buddy-art"></div><p class="bubble" id="buddyLine">같이 공부하자!</p></div>
     <div class="stats">
       <div class="stat"><b id="sitTime">00:00</b><span>앉아 있던 시간</span></div>
       <div class="stat"><b id="rate">–</b><span>집중률</span></div>
       <div class="stat"><b id="awayCount">0</b><span>딴짓 횟수</span></div>
+      <div class="stat"><b id="todayPts">0/180</b><span>오늘 점수 ⭐</span></div>
     </div>
     <div class="row">
       <button id="pauseBtn" type="button" class="ghost">잠깐 쉬기</button>
@@ -279,6 +451,7 @@
         <span><i style="background:var(--off)"></i>자리 비움</span>
       </div>
     </div>
+    <p class="points-line" id="dPoints"></p>
     <p id="doneSummary"></p>
   </div>
   <div class="panel reflect">
@@ -314,10 +487,16 @@
   let audioCtx = null;
 
   // ---------- 화면 전환 ----------
-  const views = ["vSetup", "vCalib", "vSession", "vDone"];
+  const views = ["vSetup", "vCalib", "vSession", "vDone", "vPets", "vAvatar"];
   function show(id, camHolder) {
     for (const v of views) $(v).hidden = v !== id;
     $("vRecords").hidden = id !== "vSetup";
+    $("vUniverse").hidden = id !== "vSetup";
+    $("tabs").hidden = !["vSetup", "vPets", "vAvatar"].includes(id);
+    for (const b of $("tabs").querySelectorAll("button")) b.setAttribute("aria-selected", String(b.dataset.v === id));
+    if (id === "vSetup") renderUniverse();
+    if (id === "vPets") renderPets();
+    if (id === "vAvatar") renderAvatar();
     if (id === "vSetup") renderRecords();
     window.scrollTo(0, 0);
     if (camHolder) { $(camHolder).prepend(video); video.hidden = false; }
@@ -478,6 +657,7 @@
       startedAt: Date.now(), running: true, paused: false,
       focusSec: 0, sitSec: 0, pending: 0, nonFocusRun: 0, noFaceRun: 0, closedRun: 0,
       awayCount: 0, wasRed: false, votes: [], touchedAt: 0,
+      runSec: 0, bonusBlocks: 0, creditedMin: 0, sessionPoints: 0, levelBefore: levelOf(game.total),
       timeline: [], // 1초마다 상태 기록 (3단계 그래프용)
     });
     $("sessSubject").textContent = settings.subject;
@@ -508,12 +688,12 @@
     S.closedRun = sec === "closed" ? S.closedRun + 1 : 0;
 
     // 30초 넘게 얼굴이 없으면 자리 비움 → 시간 멈춤
-    if (S.noFaceRun >= 30) { S.timeline.push("absent"); S.pending = 0; render("absent"); return; }
+    if (S.noFaceRun >= 30) { S.timeline.push("absent"); S.pending = 0; S.runSec = 0; S.bonusBlocks = 0; render("absent"); return; }
 
     S.sitSec++;
     let shown;
     if (sec === "focus") {
-      S.focusSec += 1 + S.pending; S.pending = 0; S.nonFocusRun = 0; S.wasRed = false;
+      S.focusSec += 1 + S.pending; S.runSec += 1 + S.pending; S.pending = 0; S.nonFocusRun = 0; S.wasRed = false;
       shown = "focus";
     } else if (sec === "closed" && S.closedRun >= 2) {
       S.pending = 0; S.nonFocusRun++;
@@ -530,7 +710,9 @@
     const red = shown === "away" || shown === "sleepy" || shown === "screen";
     if (red && !S.wasRed) S.awayCount++;
     S.wasRed = red;
+    if (red) { S.runSec = 0; S.bonusBlocks = 0; }
     S.timeline.push(shown);
+    awardPoints();
     render(shown);
   }
 
@@ -550,6 +732,8 @@
     $("sitTime").textContent = mmss(S.sitSec);
     $("rate").textContent = S.sitSec ? Math.round((S.focusSec / S.sitSec) * 100) + "%" : "–";
     $("awayCount").textContent = S.awayCount;
+    $("todayPts").textContent = todayPoints() + "/" + DAILY_MAX;
+    updateBuddy(state);
     const f = S.last;
     $("debug").textContent = f?.face
       ? `고개 위아래 ${f.down.toFixed(0)}° (책 ${S.calib.book.down.toFixed(0)}°) · 좌우 ${f.left.toFixed(0)}° · 눈 감김 ${Math.round(f.blink * 100)}%`
@@ -581,6 +765,7 @@
       focusSec: S.focusSec, sitSec: S.sitSec, awayCount: S.awayCount, timeline: S.timeline,
     };
     rec.bestSec = longestFocus(S.timeline);
+    rec.points = S.sessionPoints;
     const all = store.get("sg.records") || [];
     all.push(rec); store.set("sg.records", all.slice(-200));
     showResult(rec);
@@ -624,6 +809,10 @@
     let msg = rate >= 80 ? "대단해요! 정말 집중을 잘했어요. 👏" : rate >= 50 ? "좋아요! 조금만 더 하면 집중 고수예요. 💪" : "괜찮아요. 집중이 깨진 순간을 돌아보면 다음엔 더 잘할 수 있어요. 🌱";
     $("doneSummary").textContent = `딴짓 ${rec.awayCount}번 · ${msg}`;
     drawTimeline(rec.timeline);
+    $("dPoints").textContent = `⭐ +${rec.points || 0}점 · 🎟️ 티켓 ${ticketsLeft()}장 · 오늘 ${todayPoints()}/${DAILY_MAX}점`;
+    const lvNow = levelOf(game.total);
+    if (S.levelBefore && lvNow > S.levelBefore) showLevelUp(S.levelBefore, lvNow);
+    setTimeout(flushCelebrations, 400);
     for (const q of ["q1", "q2", "q3"]) $(q).value = "";
     show("vDone");
     video.hidden = true;
@@ -710,6 +899,587 @@
   async function keepAwake() { try { wakeLock = await navigator.wakeLock?.request("screen"); } catch {} }
   document.addEventListener("visibilitychange", () => { if (!document.hidden && S.running) keepAwake(); });
 
+  // ---------- 5단계: 점수 · 티켓 · 레벨 · 우주 ----------
+  const DAILY_MAX = 180, TICKET_PER = 10;
+  const game = Object.assign({ total: 0, days: {}, ticketsSpent: 0 }, store.get("sg.game") || {});
+  const saveGame = () => store.set("sg.game", game);
+  const todayPoints = () => game.days[dayKey(Date.now())] || 0;
+  const yesterdayPoints = () => { const y = new Date(); y.setDate(y.getDate() - 1); return game.days[dayKey(y)] || 0; };
+  // Lv.L 이 되려면 4×(L-1)² 점: Lv.6=100, Lv.11=400, Lv.16=900, Lv.21=1600, Lv.26=2500
+  const needFor = (L) => 4 * (L - 1) ** 2;
+  const levelOf = (t) => Math.floor(Math.sqrt(t / 4)) + 1;
+  const ticketsLeft = () => Math.floor(game.total / TICKET_PER) - game.ticketsSpent;
+  const STAGES = [
+    { from: 1, name: "소행성", emoji: "🪨" },
+    { from: 6, name: "행성", emoji: "🌍" },
+    { from: 11, name: "별", emoji: "☀️" },
+    { from: 16, name: "은하", emoji: "🌌" },
+    { from: 21, name: "블랙홀", emoji: "🕳️" },
+    { from: 26, name: "새로운 우주", emoji: "✨" },
+  ];
+  const stageOf = (L) => [...STAGES].reverse().find((s) => L >= s.from);
+  // 받침에 맞는 조사: 이/가, 으로/로
+  const jong = (w) => { const c = w.charCodeAt(w.length - 1) - 0xac00; return c >= 0 && c <= 11171 ? c % 28 : 0; };
+  const iGa = (w) => w + (jong(w) ? "이" : "가");
+  const euro = (w) => w + (jong(w) && jong(w) !== 8 ? "으로" : "로");
+
+  let capNoticed = false;
+  function addPoints(n, label) {
+    const k = dayKey(Date.now()), today = game.days[k] || 0;
+    const got = Math.max(0, Math.min(n, DAILY_MAX - today));
+    if (got > 0) {
+      game.total += got; game.days[k] = today + got; saveGame();
+      if (S.running) S.sessionPoints += got;
+      toast(`+${got}점 ${label}`);
+    }
+    if (got < n && !capNoticed) { capNoticed = true; toast("오늘 180점 달성! 🎉 이제 푹 쉬어도 돼요", 4000); }
+    return got;
+  }
+
+  // 공부 중 1초마다 불림
+  function awardPoints() {
+    const mins = Math.floor(S.focusSec / 60);
+    if (mins > S.creditedMin) {
+      const n = mins - S.creditedMin; S.creditedMin = mins;
+      petProgress(n);
+      if (todayPoints() === 0 && yesterdayPoints() > 0) addPoints(3, "🔥 연속 공부 보너스");
+      addPoints(n, "⭐");
+    }
+    const blocks = Math.floor(S.runSec / 1500); // 25분 = 1500초
+    if (blocks > S.bonusBlocks) { S.bonusBlocks = blocks; addPoints(5, "💪 25분 연속 집중 보너스"); }
+  }
+
+  let toastTimer = null;
+  function toast(text, ms = 1800) {
+    const t = $("toast"); t.textContent = text; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, ms);
+  }
+
+  function showLevelUp(from, to) {
+    const a = stageOf(from), b = stageOf(to);
+    const text = a !== b
+      ? `우와! 내 우주가 ${a.emoji} ${a.name}에서 ${b.emoji} ${euro(b.name)} 진화했어요!`
+      : `내 ${iGa(b.name)} 더 커졌어요. 계속 공부하면 더 크게 자라요!`;
+    celebrate({ emoji: b.emoji, title: `레벨 업! Lv.${to}`, text });
+  }
+
+  // 축하 창은 차례대로 하나씩 (레벨 업, 부화, 진화)
+  const celebrations = [];
+  function celebrate(c) { celebrations.push(c); }
+  function flushCelebrations() {
+    if (!$("lvModal").hidden || !celebrations.length) return;
+    const c = celebrations.shift();
+    if (c.svg) $("lvEmoji").innerHTML = c.svg; else $("lvEmoji").textContent = c.emoji;
+    $("lvTitle").textContent = c.title; $("lvText").textContent = c.text;
+    $("lvModal").hidden = false; $("lvClose").focus();
+    try { navigator.vibrate?.(200); } catch {}
+  }
+  $("lvClose").addEventListener("click", () => { $("lvModal").hidden = true; setTimeout(flushCelebrations, 250); });
+
+  function renderUniverse() {
+    const L = levelOf(game.total), st = stageOf(L);
+    const cur = needFor(L), next = needFor(L + 1);
+    $("uniLevel").textContent = `Lv.${L}`;
+    $("uniStage").textContent = `${st.emoji} ${st.name}`;
+    $("uniBar").style.width = Math.round(((game.total - cur) / (next - cur)) * 100) + "%";
+    $("uniNext").textContent = `다음 레벨까지 ${next - game.total}점`;
+    $("wToday").textContent = `${todayPoints()}/${DAILY_MAX}`;
+    $("wTickets").textContent = `${ticketsLeft()}장`;
+    $("wTotal").textContent = `${game.total}점`;
+    const nextStage = STAGES.find((s) => s.from > L);
+    $("uniHint").textContent = nextStage
+      ? `Lv.${nextStage.from}이 되면 ${nextStage.emoji} ${euro(nextStage.name)} 진화해요! (${needFor(nextStage.from) - game.total}점 남음)`
+      : "우주의 끝까지 왔어요! 그래도 우주는 계속 자라요 ✨";
+    $("uniCanvas").setAttribute("aria-label", `내 우주: Lv.${L} ${st.name}`);
+    startUniverse();
+  }
+
+  // ---- 우주 그림 ----
+  const uni = $("uniCanvas"), uc = uni.getContext("2d");
+  const seeded = (s) => () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let bgStars = null, galaxy = null, uniRaf = null;
+
+  function startUniverse() {
+    if (uniRaf) return;
+    const frame = (t) => {
+      if ($("vUniverse").hidden) { uniRaf = null; return; }
+      drawUniverse(reduceMotion ? 0 : t);
+      uniRaf = reduceMotion ? null : requestAnimationFrame(frame);
+    };
+    uniRaf = requestAnimationFrame(frame);
+  }
+
+  function drawUniverse(t) {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = uni.clientWidth, h = uni.clientHeight;
+    if (!w || !h) return;
+    if (uni.width !== Math.round(w * dpr)) { uni.width = Math.round(w * dpr); uni.height = Math.round(h * dpr); }
+    const c = uc; c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.fillStyle = "#0b1020"; c.fillRect(0, 0, w, h);
+    if (!bgStars) { const r = seeded(7); bgStars = Array.from({ length: 110 }, () => [r(), r(), r() * 1.2 + 0.3, r()]); }
+    c.fillStyle = "#fff";
+    for (const [x, y, s, ph] of bgStars) {
+      c.globalAlpha = 0.35 + 0.35 * Math.sin(t / 900 + ph * 6.28);
+      c.beginPath(); c.arc(x * w, y * h, s, 0, 6.29); c.fill();
+    }
+    c.globalAlpha = 1;
+    const L = levelOf(game.total), st = stageOf(L), k = Math.min(4, L - st.from); // 단계 안에서 0~4
+    const cx = w / 2, cy = h / 2, m = Math.min(w, h);
+    ({ 1: drawRock, 6: drawPlanet, 11: drawStar, 16: drawGalaxy, 21: drawBlackHole, 26: drawNewUniverse })[st.from](c, cx, cy, m, k, t);
+  }
+
+  function drawRock(c, cx, cy, m, k, t) {
+    const r = m * (0.12 + 0.035 * k), rnd = seeded(3);
+    c.save(); c.translate(cx, cy); c.rotate(t / 9000);
+    c.beginPath();
+    for (let i = 0; i < 14; i++) {
+      const a = (i / 14) * Math.PI * 2, rr = r * (0.78 + 0.22 * rnd());
+      i ? c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : c.moveTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    c.closePath();
+    const g = c.createRadialGradient(-r * 0.3, -r * 0.3, r * 0.1, 0, 0, r);
+    g.addColorStop(0, "#b4aa9e"); g.addColorStop(1, "#5f574f");
+    c.fillStyle = g; c.fill();
+    c.fillStyle = "rgba(40,34,30,.45)";
+    for (let i = 0; i < 3 + k; i++) { c.beginPath(); c.arc((rnd() - 0.5) * r, (rnd() - 0.5) * r, r * (0.08 + rnd() * 0.12), 0, 6.29); c.fill(); }
+    c.restore();
+  }
+
+  function drawPlanet(c, cx, cy, m, k, t) {
+    const r = m * (0.16 + 0.03 * k);
+    const ring = (front) => {
+      if (k < 2) return;
+      c.save(); c.translate(cx, cy); c.rotate(-0.35);
+      c.strokeStyle = "rgba(230,205,150,.85)"; c.lineWidth = r * 0.12;
+      c.beginPath(); c.ellipse(0, 0, r * 1.75, r * 0.42, 0, front ? 0 : Math.PI, front ? Math.PI : Math.PI * 2); c.stroke();
+      c.restore();
+    };
+    ring(false);
+    c.save(); c.beginPath(); c.arc(cx, cy, r, 0, 6.29); c.clip();
+    const g = c.createRadialGradient(cx - r * 0.35, cy - r * 0.35, r * 0.1, cx, cy, r);
+    g.addColorStop(0, "#5fb3ff"); g.addColorStop(1, "#173f8a");
+    c.fillStyle = g; c.fillRect(cx - r, cy - r, r * 2, r * 2);
+    const rnd = seeded(11), shift = (t / 60) % (r * 4);
+    c.fillStyle = "#3fae6a";
+    for (let i = 0; i < 6; i++) {
+      const x0 = (rnd() * 4 - 2) * r, y0 = (rnd() - 0.5) * 1.6 * r, s = r * (0.2 + rnd() * 0.25);
+      const x = ((x0 + shift + r * 2) % (r * 4)) - r * 2; // 오른쪽으로 돌다가 왼쪽에서 다시 나옴
+      for (const off of [0, r * 4]) { c.beginPath(); c.arc(cx + x - off, cy + y0, s, 0, 6.29); c.fill(); }
+    }
+    const shade = c.createRadialGradient(cx - r * 0.4, cy - r * 0.4, r * 0.2, cx, cy, r * 1.05);
+    shade.addColorStop(0, "rgba(0,0,0,0)"); shade.addColorStop(1, "rgba(0,0,20,.55)");
+    c.fillStyle = shade; c.fillRect(cx - r, cy - r, r * 2, r * 2);
+    c.restore();
+    ring(true);
+    if (k >= 4) {
+      const a = t / 3000;
+      c.fillStyle = "#cfd3d8";
+      c.beginPath(); c.arc(cx + Math.cos(a) * r * 2.1, cy + Math.sin(a) * r * 0.7, r * 0.16, 0, 6.29); c.fill();
+    }
+  }
+
+  function drawStar(c, cx, cy, m, k, t) {
+    const r = m * (0.12 + 0.03 * k), pulse = 1 + 0.05 * Math.sin(t / 500);
+    const glow = c.createRadialGradient(cx, cy, r * 0.6, cx, cy, r * 2.8 * pulse);
+    glow.addColorStop(0, "rgba(255,200,80,.55)"); glow.addColorStop(1, "rgba(255,120,30,0)");
+    c.fillStyle = glow; c.beginPath(); c.arc(cx, cy, r * 2.8 * pulse, 0, 6.29); c.fill();
+    const core = c.createRadialGradient(cx - r * 0.2, cy - r * 0.2, r * 0.1, cx, cy, r);
+    core.addColorStop(0, "#fffbe6"); core.addColorStop(0.5, "#ffd84a"); core.addColorStop(1, "#ff9a1f");
+    c.fillStyle = core; c.beginPath(); c.arc(cx, cy, r, 0, 6.29); c.fill();
+  }
+
+  function drawGalaxy(c, cx, cy, m, k, t) {
+    const R = m * (0.36 + 0.04 * k);
+    if (!galaxy) {
+      const rnd = seeded(29);
+      galaxy = Array.from({ length: 1100 }, (_, i) => {
+        const arm = i % 3, d = Math.pow(rnd(), 0.7);
+        return { arm, d, a: arm * 2.094 + d * 4.2 + (rnd() - 0.5) * 0.5, s: rnd() * 1.6 + 1, hue: rnd() };
+      });
+    }
+    const arms = k >= 2 ? 3 : 2, count = 400 + 170 * k, rot = t / 25000;
+    c.save(); c.translate(cx, cy); c.scale(1, 0.55);
+    const core = c.createRadialGradient(0, 0, 0, 0, 0, R * 0.35);
+    core.addColorStop(0, "rgba(255,240,200,.95)"); core.addColorStop(1, "rgba(255,200,150,0)");
+    c.fillStyle = core; c.beginPath(); c.arc(0, 0, R * 0.35, 0, 6.29); c.fill();
+    for (let i = 0; i < count; i++) {
+      const p = galaxy[i]; if (p.arm >= arms) continue;
+      const a = p.a + rot, rr = p.d * R;
+      c.fillStyle = p.hue < 0.6 ? "#a9c8ff" : p.hue < 0.85 ? "#ffd1f0" : "#fff3c4";
+      c.globalAlpha = 1 - p.d * 0.35;
+      c.fillRect(Math.cos(a) * rr, Math.sin(a) * rr, p.s, p.s);
+    }
+    c.restore(); c.globalAlpha = 1;
+  }
+
+  function drawBlackHole(c, cx, cy, m, k, t) {
+    const R = m * (0.10 + 0.025 * k);
+    const disk = (front) => {
+      c.save(); c.translate(cx, cy); c.rotate(-0.2); c.scale(1, 0.3);
+      const g = c.createRadialGradient(0, 0, R * 1.2, 0, 0, R * 3.2);
+      g.addColorStop(0, "rgba(255,240,180,.95)"); g.addColorStop(0.4, "rgba(255,150,40,.85)"); g.addColorStop(1, "rgba(200,60,10,0)");
+      c.fillStyle = g; c.beginPath();
+      front ? c.arc(0, 0, R * 3.2, 0, Math.PI) : c.arc(0, 0, R * 3.2, Math.PI, Math.PI * 2);
+      c.fill(); c.restore();
+    };
+    disk(false);
+    c.fillStyle = "#000"; c.beginPath(); c.arc(cx, cy, R, 0, 6.29); c.fill();
+    c.strokeStyle = `rgba(255,190,90,${0.6 + 0.3 * Math.sin(t / 400)})`; c.lineWidth = 2;
+    c.beginPath(); c.arc(cx, cy, R * 1.06, 0, 6.29); c.stroke();
+    disk(true);
+  }
+
+  function drawNewUniverse(c, cx, cy, m, k, t) {
+    const hues = ["#7aa2ff", "#ff8fd8", "#7ef0c4", "#ffd36b", "#c9a0ff"];
+    for (let i = 0; i < 5; i++) {
+      const a = t / 6000 + i * 1.2566, d = m * 0.28, x = cx + Math.cos(a) * d, y = cy + Math.sin(a) * d * 0.6;
+      const g = c.createRadialGradient(x, y, 0, x, y, m * (0.09 + 0.01 * k));
+      g.addColorStop(0, hues[i]); g.addColorStop(1, "rgba(0,0,0,0)");
+      c.fillStyle = g; c.beginPath(); c.arc(x, y, m * (0.09 + 0.01 * k), 0, 6.29); c.fill();
+    }
+    const g = c.createRadialGradient(cx, cy, 0, cx, cy, m * 0.16);
+    g.addColorStop(0, "#ffffff"); g.addColorStop(1, "rgba(255,255,255,0)");
+    c.fillStyle = g; c.beginPath(); c.arc(cx, cy, m * 0.16, 0, 6.29); c.fill();
+  }
+
+  renderUniverse();
+
+  // ---------- 6단계: 알 · 펫 · 아바타 · 응원 캐릭터 ----------
+  const SPECIES = [
+    { name: "말랑슬라임", rarity: 0, color: "#7ed957", belly: "#c8f5b0", feat: "drop", w: 1.12, h: 0.9 },
+    { name: "솜뭉치", rarity: 0, color: "#dde9ff", belly: "#ffffff", feat: "fluff", w: 1, h: 1 },
+    { name: "도토리콩", rarity: 0, color: "#c98b4f", belly: "#f0d2a8", feat: "cap", w: 0.95, h: 1.05 },
+    { name: "불꽃도롱", rarity: 1, color: "#ff8a3d", belly: "#ffd29e", feat: "flame", w: 1, h: 1 },
+    { name: "물방울고래", rarity: 1, color: "#4aa8ff", belly: "#bfe3ff", feat: "fin", w: 1.15, h: 0.9 },
+    { name: "번개냥", rarity: 1, color: "#ffd23f", belly: "#fff2b8", feat: "ears", w: 1, h: 1 },
+    { name: "별빛용", rarity: 2, color: "#8f6bff", belly: "#d9ccff", feat: "horns", w: 1, h: 1.05 },
+    { name: "오로라여우", rarity: 2, color: "#3fd0c9", belly: "#d2fff9", feat: "foxears", w: 1, h: 1 },
+    { name: "블랙홀펭", rarity: 2, color: "#2b2d42", belly: "#5b4bb7", feat: "galaxy", w: 0.95, h: 1.1 },
+  ];
+  const RARITY = ["흔함", "희귀", "✨ 전설"];
+  const STAGE_NAME = ["아기", "청소년", "어른"];
+  const EVOLVE_AT = [0, 60, 300]; // 짝꿍과 함께 공부한 분
+  const EGG_COST = 3, HATCH_MIN = 30;
+
+  const pets = Object.assign({ eggs: [], list: [], partner: null, personality: "kind", started: false, seq: 0 }, store.get("sg.pets") || {});
+  const savePets = () => store.set("sg.pets", pets);
+  if (!pets.started) { pets.started = true; pets.eggs.push({ progress: 0, gift: true }); savePets(); } // 첫 알은 선물
+  const getPartner = () => pets.list.find((p) => p.id === pets.partner) || null;
+
+  // 펫 그림 (직접 만든 SVG)
+  function petSVG(sp, stage, mood = "happy") {
+    const s = SPECIES[sp], k = [0.72, 0.86, 1][stage];
+    const rx = 34 * k * s.w, ry = 32 * k * s.h, cx = 60, cy = 106 - ry, top = cy - ry;
+    let back = "", front = "";
+    if (stage >= 2) { // 어른: 날개 + 반짝이
+      back += `<ellipse cx="${cx - rx - 6}" cy="${cy - 6}" rx="16" ry="9" fill="#ffffff" stroke="${s.color}" stroke-width="2" transform="rotate(-25 ${cx - rx - 6} ${cy - 6})"/>
+               <ellipse cx="${cx + rx + 6}" cy="${cy - 6}" rx="16" ry="9" fill="#ffffff" stroke="${s.color}" stroke-width="2" transform="rotate(25 ${cx + rx + 6} ${cy - 6})"/>`;
+      front += `<text x="18" y="30" font-size="12" fill="#ffd23f">✦</text><text x="96" y="40" font-size="10" fill="#ffd23f">✦</text>`;
+    }
+    const f = s.feat;
+    if (f === "drop") back += `<path d="M${cx - 9} ${top + 6} Q${cx} ${top - 16 - stage * 4} ${cx + 9} ${top + 6}Z" fill="${s.color}"/>`;
+    if (f === "fluff") back += [[-13, 5, 9], [0, -1, 11], [13, 5, 9]].map(([x, y, r]) => `<circle cx="${cx + x * k}" cy="${top + y}" r="${r * k}" fill="${s.color}"/>`).join("");
+    if (stage >= 1) {
+      if (f === "cap") front += `<path d="M${cx - rx * 0.92} ${top + ry * 0.45} Q${cx} ${top - ry * 0.55} ${cx + rx * 0.92} ${top + ry * 0.45}Z" fill="#7a4a22"/><rect x="${cx - 2}" y="${top - ry * 0.32 - 8}" width="4" height="10" rx="2" fill="#5b3415"/>`;
+      if (f === "flame") back += `<path d="M${cx} ${top - 20} C${cx + 15} ${top - 4} ${cx + 10} ${top + 10} ${cx} ${top + 10} C${cx - 10} ${top + 10} ${cx - 15} ${top - 4} ${cx} ${top - 20}Z" fill="#ff5a1f"/><path d="M${cx} ${top - 8} C${cx + 7} ${top} ${cx + 5} ${top + 8} ${cx} ${top + 8} C${cx - 5} ${top + 8} ${cx - 7} ${top} ${cx} ${top - 8}Z" fill="#ffd23f"/>`;
+      if (f === "fin") back += `<path d="M${cx + rx - 4} ${cy} L${cx + rx + 18} ${cy - 16} L${cx + rx + 14} ${cy + 12}Z" fill="${s.color}"/><path d="M${cx - 6} ${top + 4} L${cx + 4} ${top - 12} L${cx + 10} ${top + 4}Z" fill="${s.color}"/>`;
+      if (f === "ears") back += `<path d="M${cx - rx * 0.75} ${top + ry * 0.4} L${cx - rx * 0.55} ${top - 12} L${cx - rx * 0.1} ${top + ry * 0.12}Z M${cx + rx * 0.75} ${top + ry * 0.4} L${cx + rx * 0.55} ${top - 12} L${cx + rx * 0.1} ${top + ry * 0.12}Z" fill="${s.color}"/>`;
+      if (f === "ears" && stage >= 2) front += `<path d="M${cx + 2} ${cy + 2} l-6 10 h6 l-3 10 l10 -14 h-6 l3 -6z" fill="#ff9a1f"/>`;
+      if (f === "horns") back += `<path d="M${cx - rx * 0.45} ${top + 6} L${cx - rx * 0.6} ${top - 14} L${cx - rx * 0.2} ${top + 4}Z M${cx + rx * 0.45} ${top + 6} L${cx + rx * 0.6} ${top - 14} L${cx + rx * 0.2} ${top + 4}Z" fill="#ffd86b"/>`;
+      if (f === "foxears") back += `<path d="M${cx - rx * 0.8} ${top + ry * 0.45} L${cx - rx * 0.6} ${top - 18} L${cx - rx * 0.05} ${top + ry * 0.1}Z M${cx + rx * 0.8} ${top + ry * 0.45} L${cx + rx * 0.6} ${top - 18} L${cx + rx * 0.05} ${top + ry * 0.1}Z" fill="${s.color}"/><path d="M${cx - rx} ${cy + ry * 0.5} Q${cx - rx - 24} ${cy} ${cx - rx - 10} ${cy - ry * 0.6} Q${cx - rx - 2} ${cy} ${cx - rx + 6} ${cy + ry * 0.2}Z" fill="${s.belly}" stroke="${s.color}" stroke-width="3"/>`;
+      if (f === "galaxy") front += [[-8, 6], [6, 12], [-2, 18], [10, 2]].map(([x, y]) => `<circle cx="${cx + x * k}" cy="${cy + y * k}" r="1.6" fill="#fff"/>`).join("");
+    }
+    const ex = rx * 0.36, ey = cy - ry * 0.15, er = 5.5 * k + 1;
+    let eyes, mouth;
+    if (mood === "sleepy") {
+      eyes = [-1, 1].map((d) => `<path d="M${cx + d * ex - er} ${ey} q${er} ${er * 0.8} ${er * 2} 0" stroke="#1d1d2b" stroke-width="2.4" fill="none" stroke-linecap="round"/>`).join("");
+      mouth = `<ellipse cx="${cx}" cy="${ey + er * 2}" rx="2.6" ry="3.2" fill="#7a2f3a"/><text x="${cx + rx * 0.6}" y="${top + 4}" font-size="13" fill="#7aa2ff" font-family="sans-serif">z</text>`;
+    } else {
+      eyes = [-1, 1].map((d) => `<circle cx="${cx + d * ex}" cy="${ey}" r="${er}" fill="#fff"/><circle cx="${cx + d * ex}" cy="${ey + 0.8}" r="${er * 0.62}" fill="#1d1d2b"/><circle cx="${cx + d * ex + er * 0.25}" cy="${ey - er * 0.25}" r="${er * 0.22}" fill="#fff"/>`).join("");
+      mouth = mood === "sad"
+        ? `<path d="M${cx - 6} ${ey + er * 2.4} q6 -6 12 0" stroke="#7a2f3a" stroke-width="2.4" fill="none" stroke-linecap="round"/><ellipse cx="${cx + ex + 2}" cy="${ey + er * 1.6}" rx="2" ry="3" fill="#7ec8ff"/>`
+        : `<path d="M${cx - 7} ${ey + er * 1.7} q7 7 14 0" stroke="#7a2f3a" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+    }
+    const cheeks = [-1, 1].map((d) => `<ellipse cx="${cx + d * ex * 1.55}" cy="${ey + er * 1.4}" rx="${4 * k + 1}" ry="${2.6 * k + 1}" fill="#ff8fa3" opacity=".55"/>`).join("");
+    return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${back}
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${s.color}"/>
+      <ellipse cx="${cx}" cy="${cy + ry * 0.3}" rx="${rx * 0.6}" ry="${ry * 0.55}" fill="${s.belly}"/>
+      ${front}${eyes}${cheeks}${mouth}</svg>`;
+  }
+
+  function eggSVG(progress = 0) {
+    const crack = progress >= 0.5 ? `<path d="M40 64 l7 -6 l6 7 l7 -8 l7 7 l7 -6" stroke="#8a6d3b" stroke-width="2.4" fill="none" stroke-linejoin="round"/>` : "";
+    const crack2 = progress >= 0.85 ? `<path d="M46 84 l6 -5 l5 6 l6 -6" stroke="#8a6d3b" stroke-width="2.2" fill="none"/>` : "";
+    return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse cx="60" cy="110" rx="26" ry="5" fill="#000" opacity=".12"/>
+      <path d="M60 22 C82 22 90 58 90 76 C90 96 76 108 60 108 C44 108 30 96 30 76 C30 58 38 22 60 22Z" fill="#fff6e0" stroke="#e8d3a6" stroke-width="2"/>
+      <circle cx="48" cy="52" r="6" fill="#ffb4c8"/><circle cx="70" cy="44" r="4" fill="#9ad7ff"/><circle cx="72" cy="80" r="7" fill="#b9f0a0"/><circle cx="46" cy="90" r="4" fill="#ffd36b"/>
+      ${crack}${crack2}</svg>`;
+  }
+
+  function hatch() {
+    const r = Math.random(), rarity = r < 0.05 ? 2 : r < 0.3 ? 1 : 0;
+    const pool = SPECIES.map((_, i) => i).filter((i) => SPECIES[i].rarity === rarity);
+    const sp = pool[Math.floor(Math.random() * pool.length)];
+    const pet = { id: ++pets.seq, sp, stage: 0, xp: 0, name: SPECIES[sp].name, born: Date.now() };
+    pets.list.push(pet);
+    if (!pets.partner) pets.partner = pet.id;
+    return pet;
+  }
+
+  // 공부한 분만큼 알이 따뜻해지고, 짝꿍 펫이 자라요
+  function petProgress(n) {
+    const egg = pets.eggs[0];
+    if (egg) {
+      egg.progress += n;
+      if (egg.progress >= HATCH_MIN) {
+        pets.eggs.shift();
+        const p = hatch();
+        buddyState = null; // 말풍선을 바로 새 펫으로
+        toast(`🐣 알이 부화했어요! ${SPECIES[p.sp].name}`, 3000);
+        celebrate({ svg: petSVG(p.sp, 0), title: "알이 부화했어요! 🐣", text: `${RARITY[SPECIES[p.sp].rarity]} 펫 '${SPECIES[p.sp].name}'${jong(SPECIES[p.sp].name) ? "이" : "가"} 태어났어요!` });
+      }
+    }
+    const p = getPartner();
+    if (p) {
+      p.xp += n;
+      const st = p.xp >= EVOLVE_AT[2] ? 2 : p.xp >= EVOLVE_AT[1] ? 1 : 0;
+      if (st > p.stage) {
+        p.stage = st;
+        buddyState = null;
+        toast(`✨ ${p.name} 진화!`, 3000);
+        celebrate({ svg: petSVG(p.sp, st), title: "진화했어요! ✨", text: `${p.name}${jong(p.name) ? "이" : "가"} ${STAGE_NAME[st]}${jong(STAGE_NAME[st]) ? "이" : "가"} 되었어요!` });
+      }
+    }
+    savePets();
+  }
+
+  function renderPets() {
+    const p = getPartner();
+    if (p) {
+      const s = SPECIES[p.sp];
+      $("partnerArt").innerHTML = petSVG(p.sp, p.stage);
+      $("partnerName").textContent = p.name;
+      $("partnerRarity").hidden = false; $("partnerRarity").textContent = RARITY[s.rarity];
+      $("partnerDesc").textContent = `${s.name} · ${STAGE_NAME[p.stage]} · 함께 공부한 시간 ${p.xp}분`;
+      const next = EVOLVE_AT[p.stage + 1];
+      $("partnerBar").style.width = next ? Math.round(((p.xp - EVOLVE_AT[p.stage]) / (next - EVOLVE_AT[p.stage])) * 100) + "%" : "100%";
+      $("partnerNext").textContent = next ? `${next - p.xp}분 더 같이 공부하면 ${euro(STAGE_NAME[p.stage + 1])} 진화해요!` : "최종 진화 완료! 👑";
+      $("petNameInput").disabled = false; $("petNameInput").value = p.name;
+    } else {
+      const egg = pets.eggs[0];
+      $("partnerArt").innerHTML = eggSVG(egg ? egg.progress / HATCH_MIN : 0);
+      $("partnerName").textContent = "아직 펫이 없어요";
+      $("partnerRarity").hidden = true;
+      $("partnerDesc").textContent = egg ? "알을 품고 공부하면 첫 펫이 태어나요!" : "티켓으로 알을 사 보세요!";
+      $("partnerBar").style.width = egg ? Math.round((egg.progress / HATCH_MIN) * 100) + "%" : "0%";
+      $("partnerNext").textContent = egg ? `부화까지 ${HATCH_MIN - egg.progress}분 남았어요` : "";
+      $("petNameInput").disabled = true; $("petNameInput").value = "";
+    }
+    $("personality").value = pets.personality;
+    $("ticketCount").textContent = `🎟️ ${ticketsLeft()}장`;
+    const can = ticketsLeft() >= EGG_COST;
+    $("buyEgg").disabled = !can;
+    $("buyEgg").textContent = can ? `알 사기 (티켓 ${EGG_COST}장)` : `티켓 ${EGG_COST}장이 필요해요`;
+
+    const list = $("eggList"); list.textContent = "";
+    if (!pets.eggs.length) { const e = document.createElement("p"); e.className = "small muted"; e.textContent = "가지고 있는 알이 없어요."; list.append(e); }
+    pets.eggs.forEach((egg, i) => {
+      const row = document.createElement("div"); row.className = "egg-row";
+      const art = document.createElement("div"); art.innerHTML = eggSVG(i === 0 ? egg.progress / HATCH_MIN : 0);
+      const info = document.createElement("div");
+      const t = document.createElement("b"); t.textContent = i === 0 ? `품는 중${egg.gift ? " (선물 🎁)" : ""}` : `기다리는 알 ${i}`;
+      const sub = document.createElement("p"); sub.className = "small muted";
+      sub.textContent = i === 0 ? `${egg.progress}/${HATCH_MIN}분 · 공부하면 따뜻해져요` : "앞의 알이 부화하면 품기 시작해요";
+      info.append(t, sub);
+      if (i === 0) { const bar = document.createElement("div"); bar.className = "bar"; const fill = document.createElement("i"); fill.style.width = Math.round((egg.progress / HATCH_MIN) * 100) + "%"; bar.append(fill); info.append(bar); }
+      row.append(art, info); list.append(row);
+    });
+
+    const dex = $("dex"); dex.textContent = "";
+    let found = 0;
+    SPECIES.forEach((s, i) => {
+      const mine = pets.list.filter((x) => x.sp === i).sort((a, b) => b.xp - a.xp);
+      const btn = document.createElement("button"); btn.type = "button";
+      if (mine.length) {
+        found++;
+        const best = mine[0];
+        btn.innerHTML = petSVG(i, best.stage);
+        const nm = document.createElement("b"); nm.textContent = best.name;
+        const r = document.createElement("span"); r.className = "r"; r.textContent = `${RARITY[s.rarity]}${mine.length > 1 ? ` · ${mine.length}마리` : ""}`;
+        btn.append(nm, r);
+        btn.setAttribute("aria-pressed", String(mine.some((x) => x.id === pets.partner)));
+        btn.addEventListener("click", () => { pets.partner = best.id; savePets(); renderPets(); toast(`${best.name}${jong(best.name) ? "이" : "가"} 짝꿍이 되었어요!`); });
+      } else {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="unknown">?</span>`;
+        const nm = document.createElement("b"); nm.textContent = "???";
+        const r = document.createElement("span"); r.className = "r"; r.textContent = RARITY[s.rarity];
+        btn.append(nm, r);
+      }
+      dex.append(btn);
+    });
+    $("dexCount").textContent = `(${found}/${SPECIES.length})`;
+  }
+
+  $("buyEgg").addEventListener("click", () => {
+    if (ticketsLeft() < EGG_COST) return;
+    game.ticketsSpent += EGG_COST; saveGame();
+    pets.eggs.push({ progress: 0 }); savePets();
+    toast("🥚 알을 샀어요!"); renderPets();
+  });
+  $("petNameInput").addEventListener("change", (e) => {
+    const p = getPartner(); if (!p) return;
+    p.name = e.target.value.trim().slice(0, 8) || SPECIES[p.sp].name;
+    savePets(); renderPets();
+  });
+  $("personality").addEventListener("change", (e) => { pets.personality = e.target.value; savePets(); toast("말투를 바꿨어요!"); });
+
+  // ---- 공부 중 응원 말풍선 ----
+  const LINES = {
+    kind: {
+      focus: ["잘하고 있어! 😊", "멋져, 이대로 가 보자!", "너랑 공부하니까 좋아~", "한 문제씩 차근차근!"],
+      think: ["천천히 생각해도 괜찮아", "음~ 어려운 문제구나!"],
+      away: ["어디 갔어? 같이 하자~ 🥺", "나 심심해… 다시 책 보자!"],
+      sleepy: ["졸리면 기지개 한 번 쭉~ 켜자!", "물 한 잔 마시고 올까?"],
+      screen: ["화면 말고 책을 봐 줘~"],
+      absent: ["기다리고 있을게!"],
+      paused: ["잘 쉬고 와!"],
+    },
+    brave: {
+      focus: ["좋아! 이대로 돌격! 💪", "집중력 최고야, 대장!", "오늘 목표까지 가자!"],
+      think: ["생각하는 것도 공부다!"],
+      away: ["앗! 딴짓 발견! 다시 집중!", "정신 차려, 대장!"],
+      sleepy: ["일어나라 용사여! 기지개!"],
+      screen: ["화면은 나중에! 책으로 출동!"],
+      absent: ["작전 대기 중!"],
+      paused: ["재충전 시간! 💪"],
+    },
+    playful: {
+      focus: ["오~ 공부 천재 등장? 😎", "이 정도면 박사님 아니야?"],
+      think: ["머리에서 김 나는 거 보여~ 🤔"],
+      away: ["딴짓하면 내가 간식 다 먹는다? 🍪", "어? 나 보고 싶었어? 책 봐야지~"],
+      sleepy: ["코~ 자면 얼굴에 낙서한다? 😜"],
+      screen: ["화면 속에 나 있어? 없지? 책 봐!"],
+      absent: ["숨바꼭질이야? 어디 숨었어~"],
+      paused: ["쉬는 동안 나랑 놀자!"],
+    },
+    strict: {
+      focus: ["좋다. 그 자세 유지.", "훌륭하다. 계속."],
+      think: ["생각은 좋다. 너무 길지 않게."],
+      away: ["지금 뭐 하는 거지? 책으로!", "딴짓은 시간 낭비다."],
+      sleepy: ["졸음 금지. 일어나서 물 한 잔."],
+      screen: ["화면 보지 말고 책을 본다."],
+      absent: ["자리를 비웠군. 기다리겠다."],
+      paused: ["쉬는 시간도 계획적으로."],
+    },
+  };
+  const EGG_LINES = {
+    focus: ["(꿈틀꿈틀) 알이 따뜻해지고 있어요 🥚"], think: ["(알이 조용히 기다려요)"],
+    away: ["(알이 식고 있어요… 다시 공부하자!)"], sleepy: ["(알도 꾸벅꾸벅…)"],
+    screen: ["(알이 책 쪽을 보고 있어요)"], absent: ["(알이 혼자 기다려요)"], paused: ["(알도 쉬는 중)"],
+  };
+  let buddyState = null, buddyAt = 0, buddySession = 0;
+  function updateBuddy(state) {
+    const now = Date.now();
+    if (S.startedAt === buddySession && state === buddyState && now - buddyAt < 45000) return;
+    buddySession = S.startedAt; buddyState = state; buddyAt = now;
+    const p = getPartner();
+    const set = p ? (LINES[pets.personality] || LINES.kind) : EGG_LINES;
+    const lines = set[state] || set.focus;
+    $("buddyLine").textContent = lines[Math.floor(Math.random() * lines.length)];
+    const mood = state === "sleepy" || state === "absent" ? "sleepy" : state === "away" || state === "screen" ? "sad" : "happy";
+    $("buddyArt").innerHTML = p ? petSVG(p.sp, p.stage, mood) : eggSVG((pets.eggs[0]?.progress || 0) / HATCH_MIN);
+  }
+
+  // ---- 아바타 ----
+  const AV = {
+    skin: { label: "피부색", sw: ["#ffe0c7", "#f5c9a0", "#d9a274", "#a8714a", "#6e4a32"] },
+    hair: { label: "머리 모양", opts: ["짧은 머리", "긴 머리", "똥머리", "삐죽 머리", "단발"] },
+    hairColor: { label: "머리 색", sw: ["#2b2118", "#6b3f1f", "#c98b3a", "#e8c25a", "#d04a5a", "#4a6bd0"] },
+    eyes: { label: "눈", opts: ["동글 눈", "웃는 눈", "반짝 눈"] },
+    acc: { label: "꾸미기", opts: ["없음", "안경", "모자", "리본", "헤드폰"] },
+    shirt: { label: "옷 색", sw: ["#1f8a6d", "#2f7fd8", "#e0565b", "#f2b33d", "#8f6bff", "#3b3f4a"] },
+  };
+  const avatar = Object.assign({ nick: "", skin: 0, hair: 0, hairColor: 0, eyes: 0, acc: 0, shirt: 0 }, store.get("sg.avatar") || {});
+  const saveAvatar = () => store.set("sg.avatar", avatar);
+
+  function avatarSVG(a) {
+    const skin = AV.skin.sw[a.skin], hc = AV.hairColor.sw[a.hairColor], sh = AV.shirt.sw[a.shirt];
+    let backHair = "", hair = "";
+    switch (a.hair) {
+      case 0: hair = `<path d="M26 44 Q27 18 50 17 Q73 18 74 44 Q66 30 50 30 Q34 30 26 44Z" fill="${hc}"/>`; break;
+      case 1: backHair = `<path d="M23 46 Q22 16 50 15 Q78 16 77 46 L80 86 L64 86 L64 52 L36 52 L36 86 L20 86Z" fill="${hc}"/>`;
+        hair = `<path d="M26 44 Q27 18 50 17 Q73 18 74 44 Q62 28 50 34 Q38 28 26 44Z" fill="${hc}"/>`; break;
+      case 2: hair = `<circle cx="50" cy="14" r="9" fill="${hc}"/><path d="M26 44 Q27 19 50 19 Q73 19 74 44 Q66 30 50 30 Q34 30 26 44Z" fill="${hc}"/>`; break;
+      case 3: hair = `<path d="M26 44 L23 26 L34 30 L35 15 L44 25 L50 11 L56 25 L65 15 L66 30 L77 26 L74 44 Q66 32 50 32 Q34 32 26 44Z" fill="${hc}"/>`; break;
+      case 4: backHair = `<path d="M22 44 Q22 15 50 15 Q78 15 78 44 L78 64 Q71 68 66 62 L66 44 L34 44 L34 62 Q29 68 22 64Z" fill="${hc}"/>`;
+        hair = `<path d="M26 42 Q30 18 50 18 Q70 18 74 42 Q60 33 50 36 Q40 33 26 42Z" fill="${hc}"/>`; break;
+    }
+    const eyes = [
+      `<circle cx="41" cy="48" r="3.2" fill="#2b2118"/><circle cx="59" cy="48" r="3.2" fill="#2b2118"/>`,
+      `<path d="M37 49 Q41 44 45 49 M55 49 Q59 44 63 49" stroke="#2b2118" stroke-width="2.6" fill="none" stroke-linecap="round"/>`,
+      `<path d="M41 43 l1.6 3.4 3.6.4 -2.7 2.4.8 3.6 -3.3 -1.9 -3.3 1.9.8 -3.6 -2.7 -2.4 3.6 -.4z M59 43 l1.6 3.4 3.6.4 -2.7 2.4.8 3.6 -3.3 -1.9 -3.3 1.9.8 -3.6 -2.7 -2.4 3.6 -.4z" fill="#2b2118"/>`,
+    ][a.eyes];
+    const acc = [
+      "",
+      `<g stroke="#2b2b33" stroke-width="2" fill="rgba(255,255,255,.25)"><circle cx="41" cy="48" r="7"/><circle cx="59" cy="48" r="7"/><path d="M48 48 h4"/></g>`,
+      `<path d="M24 36 Q26 14 50 14 Q74 14 76 36Z" fill="${sh}"/><path d="M50 34 Q78 32 88 38 Q74 40 50 38Z" fill="${sh}"/><circle cx="50" cy="15" r="3" fill="#fff"/>`,
+      `<path d="M66 22 l12 -8 v16z M66 22 l-12 -8 v16z" fill="#ff6b8b"/><circle cx="66" cy="22" r="3.5" fill="#e0436a"/>`,
+      `<path d="M23 46 Q23 14 50 14 Q77 14 77 46" stroke="#3b3f4a" stroke-width="4" fill="none"/><rect x="17" y="40" width="10" height="16" rx="4" fill="#3b3f4a"/><rect x="73" y="40" width="10" height="16" rx="4" fill="#3b3f4a"/>`,
+    ][a.acc];
+    return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      ${backHair}
+      <path d="M16 100 Q16 74 50 72 Q84 74 84 100Z" fill="${sh}"/>
+      <rect x="44" y="62" width="12" height="12" rx="4" fill="${skin}"/>
+      <circle cx="50" cy="46" r="24" fill="${skin}"/>
+      ${hair}${eyes}
+      <ellipse cx="36" cy="56" rx="4" ry="2.5" fill="#ff8fa3" opacity=".5"/><ellipse cx="64" cy="56" rx="4" ry="2.5" fill="#ff8fa3" opacity=".5"/>
+      <path d="M44 57 Q50 63 56 57" stroke="#a0463c" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      ${acc}</svg>`;
+  }
+
+  function renderMe() {
+    const b = $("meBadge"); b.innerHTML = avatarSVG(avatar);
+    const t = document.createElement("span"); t.textContent = avatar.nick || "아바타 만들기"; b.append(t);
+  }
+  function renderAvatar() {
+    $("avatarArt").innerHTML = avatarSVG(avatar);
+    $("avatarNick").textContent = avatar.nick || "닉네임을 정해 주세요";
+    $("nickInput").value = avatar.nick;
+    const box = $("avatarOpts");
+    if (!box.childElementCount) {
+      for (const [key, def] of Object.entries(AV)) {
+        const g = document.createElement("div"); g.className = "opt-group";
+        const l = document.createElement("span"); l.textContent = def.label;
+        const opts = document.createElement("div"); opts.className = "opts";
+        (def.sw || def.opts).forEach((v, i) => {
+          const b = document.createElement("button"); b.type = "button"; b.dataset.key = key; b.dataset.i = i;
+          if (def.sw) { b.className = "sw"; b.style.background = v; b.setAttribute("aria-label", `${def.label} ${i + 1}`); }
+          else b.textContent = v;
+          opts.append(b);
+        });
+        g.append(l, opts); box.append(g);
+      }
+      box.addEventListener("click", (e) => {
+        const b = e.target.closest("button[data-key]"); if (!b) return;
+        avatar[b.dataset.key] = Number(b.dataset.i); saveAvatar(); renderAvatar(); renderMe();
+      });
+    }
+    for (const b of box.querySelectorAll("button[data-key]")) b.setAttribute("aria-pressed", String(avatar[b.dataset.key] === Number(b.dataset.i)));
+  }
+  $("nickInput").addEventListener("input", (e) => {
+    avatar.nick = e.target.value.trim().slice(0, 10); saveAvatar();
+    $("avatarNick").textContent = avatar.nick || "닉네임을 정해 주세요"; renderMe();
+  });
+  $("meBadge").addEventListener("click", () => show("vAvatar"));
+  $("tabs").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-v]"); if (!b) return;
+    show(b.dataset.v);
+  });
+  renderMe();
+
   // ---------- 공유 QR ----------
   const appUrl = () => location.origin + location.pathname.replace(/index\.html$/, "");
   $("shareBtn").addEventListener("click", () => {
@@ -733,7 +1503,7 @@
   });
 
   // 테스트용
-  window.__sg = { S, classify, tick, startSession };
+  window.__sg = { S, classify, tick, startSession, game, addPoints, renderUniverse, showLevelUp, levelOf, pets, petProgress, renderPets, avatar };
 </script>
 </body>
 </html>
