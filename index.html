@@ -152,8 +152,8 @@
   .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
   .tabs button { font-size: 1.05rem; min-height: 44px; padding: 6px 18px; background: var(--panel); color: var(--ink); border: 2px solid var(--line); }
   .tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  input[type="text"] { font: inherit; color: var(--ink); background: var(--panel); border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; width: 100%; min-width: 0; }
-  input[type="text"]:focus-visible { outline: 3px solid var(--warn); outline-offset: 2px; }
+  input[type="password"], input[type="text"] { font: inherit; color: var(--ink); background: var(--panel); border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; width: 100%; min-width: 0; }
+  input[type="password"]:focus-visible, input[type="text"]:focus-visible { outline: 3px solid var(--warn); outline-offset: 2px; }
 
   /* 펫 */
   .pets { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; }
@@ -196,6 +196,26 @@
   .opts button { font-family: var(--body); font-size: .92rem; min-height: 44px; padding: 6px 14px; background: var(--panel); color: var(--ink); border: 2px solid var(--line); border-radius: 12px; }
   .opts button.sw { width: 44px; padding: 0; border-radius: 50%; }
   .opts button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+
+  /* 우리 반 */
+  .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .cls-panel { display: grid; gap: 12px; align-content: start; min-width: 0; }
+  #clsTeacher { gap: 16px; }
+  .grow { flex: 1 1 180px; }
+  .sub-h { font-family: var(--display); font-weight: 400; font-size: 1.25rem; margin: 6px 0 0; }
+  .code-big { font-family: var(--display); font-size: clamp(2rem, 7vw, 3rem); letter-spacing: .18em; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .mates { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+  .mate { display: grid; justify-items: center; gap: 2px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 6px; font-size: .85rem; text-align: center; overflow-wrap: anywhere; }
+  .mate svg { width: 56px; height: 56px; }
+  .mate.me { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .tbl-wrap { overflow-x: auto; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: .92rem; font-variant-numeric: tabular-nums; }
+  .tbl th, .tbl td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .tbl th { font-size: .8rem; color: var(--muted); font-weight: 400; }
+  .tbl .nm { display: flex; align-items: center; gap: 8px; }
+  .tbl svg { width: 32px; height: 32px; }
+  .tbl button { font-family: var(--body); font-size: .85rem; min-height: 36px; padding: 4px 12px; background: transparent; color: var(--bad); border: 1px solid var(--line); border-radius: 10px; }
+  .err:empty { display: none; }
 
   /* 명상 */
   .med { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 16px; }
@@ -247,6 +267,7 @@
   <button type="button" data-v="vSetup" aria-selected="true">📚 공부하기</button>
   <button type="button" data-v="vPets" aria-selected="false">🥚 펫</button>
   <button type="button" data-v="vAvatar" aria-selected="false">🧑 내 아바타</button>
+  <button type="button" data-v="vClass" aria-selected="false">🏫 우리 반</button>
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -404,6 +425,74 @@
   </div>
 </section>
 
+<!-- 우리 반 (8단계) -->
+<section id="vClass" hidden>
+  <p id="clsLoading" class="muted">서버에 연결하는 중이에요…</p>
+  <div id="clsOut" class="class-grid" hidden>
+    <div class="panel cls-panel">
+      <h2>🎒 학생으로 들어가기</h2>
+      <p class="small muted">선생님께 받은 <b>학급 코드</b>, 내 <b>닉네임</b>, 숫자 6자리 <b>PIN</b>을 넣어요. 실명은 쓰지 마세요!</p>
+      <label for="jCode">학급 코드<input type="text" id="jCode" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="예: K7M2QX"></label>
+      <label for="jNick">닉네임 (8글자까지)<input type="text" id="jNick" maxlength="8" autocomplete="off"></label>
+      <label for="jPin">PIN (숫자 6자리, 친구에게 알려 주지 마세요)<input type="password" id="jPin" inputmode="numeric" maxlength="6" autocomplete="off"></label>
+      <label class="row small" for="jTake" id="jTakeRow" style="display:flex" hidden><input type="checkbox" id="jTake" checked> <span id="jTakeTxt">이 기기의 기록을 내 기록으로 가져가기</span></label>
+      <p id="jMsg" class="small err" role="alert"></p>
+      <div class="row">
+        <button id="jLogin" type="button">들어가기</button>
+        <button id="jSignup" type="button" class="ghost">처음이에요 (가입)</button>
+      </div>
+      <p class="small muted">들어가면 이 기기 대신 <b>내 서버 기록</b>을 불러와요. PIN을 잊어버리면 선생님께 말해 주세요.</p>
+    </div>
+    <div class="panel cls-panel">
+      <h2>🧑‍🏫 선생님이세요?</h2>
+      <p class="small muted">Google 계정으로 로그인하면 학급을 만들고, 학생들의 점수와 레벨을 볼 수 있어요.</p>
+      <div class="row"><button id="tLogin" type="button" class="ghost">Google로 로그인</button></div>
+      <p id="tMsg" class="small err" role="alert"></p>
+    </div>
+  </div>
+
+  <div id="clsStudent" class="panel cls-panel" hidden>
+    <div class="row" style="justify-content:space-between">
+      <h2>🏫 <span id="sClassName">우리 반</span></h2>
+      <span class="chip" id="sSync">☁️ 연결됨</span>
+    </div>
+    <p class="small muted">학급 코드 <b id="sCode"></b> · 내 닉네임 <b id="sNick"></b></p>
+    <h3 class="sub-h">반 친구들 <span class="small muted" id="sCount"></span></h3>
+    <div class="mates" id="sMembers"></div>
+    <div class="row"><button id="sLogout" type="button" class="ghost small-btn">나가기 (로그아웃)</button></div>
+    <p class="small muted">나가면 이 기기에 있는 내 기록은 지워져요. 서버에는 남아 있어서 다시 들어오면 그대로예요.</p>
+  </div>
+
+  <div id="clsTeacher" class="cls-panel" hidden>
+    <div class="panel cls-panel">
+      <div class="row" style="justify-content:space-between">
+        <h2>🧑‍🏫 선생님 화면</h2>
+        <button id="tLogout" type="button" class="ghost small-btn">로그아웃</button>
+      </div>
+      <div class="row">
+        <label for="tClassSel" class="grow">내 학급<select id="tClassSel"></select></label>
+        <label for="tNewName" class="grow">새 학급 이름<input type="text" id="tNewName" maxlength="20" placeholder="예: 6학년 2반" autocomplete="off"></label>
+        <button id="tCreate" type="button" class="small-btn">학급 만들기</button>
+      </div>
+      <p id="tMsg2" class="small err" role="alert"></p>
+    </div>
+    <div class="panel cls-panel" id="tClassCard" hidden>
+      <div class="row" style="justify-content:space-between; align-items:flex-end">
+        <div><span class="small muted">학생에게 알려 줄 학급 코드</span><div class="code-big" id="tCode"></div></div>
+        <label class="row small" for="tRanking" style="display:flex"><input type="checkbox" id="tRanking"> 학생들에게 순위 보여 주기</label>
+      </div>
+      <h3 class="sub-h">학생 <span class="small muted" id="tCount"></span></h3>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>닉네임</th><th>레벨</th><th>오늘</th><th>이번 주</th><th>모은 점수</th><th>마지막 저장</th><th></th></tr></thead>
+          <tbody id="tMembers"></tbody>
+        </table>
+      </div>
+      <p class="small muted">학생이 PIN을 잊었으면 '내보내기' 후 같은 닉네임으로 다시 '들어가기'를 하게 하면 기록 없이 다시 시작돼요.</p>
+    </div>
+  </div>
+</section>
+
 <!-- 명상 (7단계) -->
 <section id="vMed" class="med" hidden>
   <div class="cam" id="medCam"><span class="tag">내 모습</span></div>
@@ -532,7 +621,7 @@
   const DEG = 180 / Math.PI;
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} store.onChange?.(k); },
   };
 
   const video = $("video");
@@ -542,17 +631,18 @@
   let audioCtx = null;
 
   // ---------- 화면 전환 ----------
-  const views = ["vSetup", "vCalib", "vSession", "vDone", "vPets", "vAvatar", "vMed"];
+  const views = ["vSetup", "vCalib", "vSession", "vDone", "vPets", "vAvatar", "vMed", "vClass"];
   function show(id, camHolder) {
     for (const v of views) $(v).hidden = v !== id;
     $("vRecords").hidden = id !== "vSetup";
     $("vUniverse").hidden = id !== "vSetup";
-    $("tabs").hidden = !["vSetup", "vPets", "vAvatar"].includes(id);
+    $("tabs").hidden = !["vSetup", "vPets", "vAvatar", "vClass"].includes(id);
     for (const b of $("tabs").querySelectorAll("button")) b.setAttribute("aria-selected", String(b.dataset.v === id));
     if (id === "vSetup") renderUniverse();
     $("medBtn").hidden = !video.srcObject;
     if (id === "vPets") renderPets();
     if (id === "vAvatar") renderAvatar();
+    if (id === "vClass") renderClass();
     if (id === "vSetup") renderRecords();
     window.scrollTo(0, 0);
     if (camHolder) { $(camHolder).prepend(video); video.hidden = false; }
@@ -1740,6 +1830,308 @@
     $("medRun").hidden = true; $("medDone").hidden = false;
   }
 
+  // ---------- 8단계: 학급 로그인 + 서버 저장 (Firebase) ----------
+  // 웹 앱 설정값은 공개용 식별자예요. 데이터는 Firestore 보안 규칙이 지켜요.
+  const FB_CONFIG = {
+    apiKey: "AIzaSyD7PyzHcaW3jYtYnmxFn7ZTaapBKVYHw5Y",
+    authDomain: "study-guard-44fbd.firebaseapp.com",
+    projectId: "study-guard-44fbd",
+    storageBucket: "study-guard-44fbd.firebasestorage.app",
+    messagingSenderId: "1059333377430",
+    appId: "1:1059333377430:web:548074b03f70c3da0721b7",
+  };
+  const FB_VER = "10.12.2";
+  const STUDENT_DOMAIN = "study-guard-44fbd.firebaseapp.com"; // 학생용 가짜 이메일 (메일은 보내지 않아요)
+  const cloud = { ready: false, error: false, user: null, role: null, info: store.get("sg.cloud"), unsub: [], members: [], classes: [], sel: null, classDoc: null };
+  let fb = null;
+
+  async function loadFirebase() {
+    if (fb) return fb;
+    const base = `https://www.gstatic.com/firebasejs/${FB_VER}/`;
+    const [appM, authM, fsM] = await Promise.all([import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore.js")]);
+    const app = appM.initializeApp(FB_CONFIG);
+    fb = { ...authM, ...fsM, auth: authM.getAuth(app), db: fsM.getFirestore(app) };
+    return fb;
+  }
+
+  const stopWatching = () => { cloud.unsub.forEach((fn) => { try { fn(); } catch {} }); cloud.unsub = []; };
+  const weekStart = () => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; };
+  const hexOf = (s) => [...new TextEncoder().encode(s)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const studentEmail = (code, nick) => `s-${code.toLowerCase()}-${hexOf(nick)}@${STUDENT_DOMAIN}`;
+  const fmtTime = (ts) => { const d = ts?.toDate?.(); return d ? `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}` : "–"; };
+
+  loadFirebase().then((f) => {
+    f.onAuthStateChanged(f.auth, (u) => {
+      stopWatching();
+      cloud.user = u; cloud.ready = true; cloud.members = [];
+      if (!u) cloud.role = null;
+      else if (u.providerData.some((p) => p.providerId === "google.com")) cloud.role = "teacher";
+      else {
+        cloud.role = "student";
+        if (!cloud.info || cloud.info.uid !== u.uid) {
+          const code = (u.email || "").split("-")[1]?.toUpperCase() || "";
+          cloud.info = { ...(cloud.info || {}), uid: u.uid, code };
+          store.set("sg.cloud", cloud.info);
+        }
+      }
+      lockNick(); renderClass();
+      if (cloud.role === "student") startStudent();
+      if (cloud.role === "teacher") startTeacher();
+    });
+  }).catch((e) => { console.error(e); cloud.error = true; renderClass(); });
+
+  function renderClass() {
+    $("clsLoading").hidden = cloud.ready && !cloud.error;
+    if (cloud.error) $("clsLoading").textContent = "서버에 연결하지 못했어요. 인터넷을 확인하고 새로고침해 주세요.";
+    $("clsOut").hidden = !cloud.ready || !!cloud.user;
+    $("clsStudent").hidden = cloud.role !== "student";
+    $("clsTeacher").hidden = cloud.role !== "teacher";
+    if (!cloud.user) {
+      const g = store.get("sg.game");
+      const has = g && g.total > 0;
+      $("jTakeRow").hidden = !has;
+      if (has) $("jTakeTxt").textContent = `이 기기의 기록(Lv.${levelOf(g.total)}, ${g.total}점)을 내 기록으로 가져가기`;
+    }
+    if (cloud.role === "student") renderStudent();
+    if (cloud.role === "teacher") renderTeacher();
+  }
+
+  // 학생은 반에 들어가면 닉네임을 바꿀 수 없어요 (반 친구들이 헷갈리지 않게)
+  function lockNick() {
+    const st = cloud.role === "student" && cloud.info?.nick;
+    $("nickInput").disabled = !!st;
+    if (st && avatar.nick !== cloud.info.nick) { avatar.nick = cloud.info.nick; try { localStorage.setItem("sg.avatar", JSON.stringify(avatar)); } catch {} renderMe(); }
+  }
+
+  // ---- 학생 ----
+  const jMsg = (t) => { $("jMsg").textContent = t; return null; };
+  function readJoin() {
+    const code = $("jCode").value.trim().toUpperCase(), nick = $("jNick").value.trim(), pin = $("jPin").value.trim();
+    if (!/^[A-Z0-9]{6}$/.test(code)) return jMsg("학급 코드는 영어와 숫자 6글자예요.");
+    if (!nick || nick.length > 8) return jMsg("닉네임은 1~8글자로 써 주세요.");
+    if (!/^\d{6}$/.test(pin)) return jMsg("PIN은 숫자 6자리예요.");
+    return { code, nick, pin };
+  }
+
+  function buildPayload() {
+    const g = store.get("sg.game") || { total: 0, days: {}, ticketsSpent: 0 };
+    const p = store.get("sg.pets") || {};
+    const a = store.get("sg.avatar") || {};
+    const info = store.get("sg.cloud") || cloud.info || {};
+    const ws = weekStart(); let week = 0;
+    for (const [k, v] of Object.entries(g.days || {})) { const [y, mo, d] = k.split("-").map(Number); if (new Date(y, mo - 1, d) >= ws) week += v; }
+    const partner = (p.list || []).find((x) => x.id === p.partner);
+    return {
+      nick: info.nick, avatar: { ...a, nick: info.nick }, game: g, pets: p,
+      total: g.total || 0, level: levelOf(g.total || 0), today: (g.days || {})[dayKey(Date.now())] || 0,
+      week, weekStart: dayKey(ws), partner: partner ? { sp: partner.sp, stage: partner.stage, name: partner.name } : null,
+      updatedAt: fb.serverTimestamp(),
+    };
+  }
+
+  async function joinClass(isNew) {
+    jMsg("");
+    const v = readJoin(); if (!v) return;
+    $("jLogin").disabled = $("jSignup").disabled = true;
+    try {
+      const f = await loadFirebase();
+      const cls = await f.getDoc(f.doc(f.db, "classes", v.code));
+      if (!cls.exists()) { jMsg("그런 학급 코드가 없어요. 다시 확인해 주세요."); return; }
+      const email = studentEmail(v.code, v.nick);
+      const cred = isNew ? await f.createUserWithEmailAndPassword(f.auth, email, v.pin) : await f.signInWithEmailAndPassword(f.auth, email, v.pin);
+      const info = { uid: cred.user.uid, code: v.code, nick: v.nick, className: cls.data().name || "" };
+      const mref = f.doc(f.db, "classes", v.code, "members", cred.user.uid);
+      const m = await f.getDoc(mref);
+      if (m.exists() && m.data().game) { // 서버 기록을 이 기기로 불러오기
+        const d = m.data();
+        localStorage.setItem("sg.game", JSON.stringify(d.game));
+        localStorage.setItem("sg.pets", JSON.stringify(d.pets || {}));
+        localStorage.setItem("sg.avatar", JSON.stringify({ ...(d.avatar || {}), nick: d.nick }));
+        localStorage.removeItem("sg.records");
+        localStorage.setItem("sg.cloud", JSON.stringify(info));
+        location.reload(); return;
+      }
+      if (!($("jTakeRow").hidden || $("jTake").checked)) ["sg.game", "sg.pets", "sg.records"].forEach((k) => localStorage.removeItem(k));
+      localStorage.setItem("sg.avatar", JSON.stringify({ ...(store.get("sg.avatar") || {}), nick: v.nick }));
+      localStorage.setItem("sg.cloud", JSON.stringify(info));
+      cloud.info = info;
+      await f.setDoc(mref, { ...buildPayload(), joinedAt: f.serverTimestamp() });
+      location.reload();
+    } catch (e) {
+      console.error(e);
+      const c = e.code || "";
+      jMsg(c.includes("email-already-in-use") ? "이미 있는 닉네임이에요. 전에 가입했다면 '들어가기'를 눌러요."
+        : /invalid-credential|wrong-password|user-not-found|invalid-login/.test(c) ? "닉네임이나 PIN이 달라요. 처음이면 '처음이에요'를 눌러요."
+        : c.includes("too-many-requests") ? "너무 많이 시도했어요. 잠시 후 다시 해 주세요."
+        : c.includes("network") ? "인터넷 연결을 확인해 주세요."
+        : "들어가지 못했어요. 다시 해 주세요.");
+    } finally { $("jLogin").disabled = $("jSignup").disabled = false; }
+  }
+  $("jLogin").addEventListener("click", () => joinClass(false));
+  $("jSignup").addEventListener("click", () => joinClass(true));
+
+  function startStudent() {
+    const code = cloud.info?.code; if (!code) return;
+    fb.getDoc(fb.doc(fb.db, "classes", code)).then((s) => {
+      cloud.classDoc = s.data() || null;
+      if (cloud.classDoc && cloud.info.className !== cloud.classDoc.name) { cloud.info.className = cloud.classDoc.name; store.set("sg.cloud", cloud.info); }
+      renderStudent();
+    }).catch(console.error);
+    cloud.unsub.push(fb.onSnapshot(fb.collection(fb.db, "classes", code, "members"), (snap) => {
+      cloud.members = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      if (!cloud.members.some((m) => m.id === cloud.user.uid) && cloud.info.nick) cloudSave(); // 선생님이 내보냈으면 다시 저장
+      renderStudent();
+    }, (e) => { console.error(e); setSync("error"); }));
+    if (cloud.info.nick) cloudSave(); // 들어오자마자 오늘·이번 주 점수 맞추기
+  }
+
+  function renderStudent() {
+    if (cloud.role !== "student") return;
+    $("sClassName").textContent = cloud.info?.className || "우리 반";
+    $("sCode").textContent = cloud.info?.code || "";
+    $("sNick").textContent = cloud.info?.nick || "";
+    $("sCount").textContent = cloud.members.length ? `(${cloud.members.length}명)` : "";
+    const box = $("sMembers"); box.textContent = "";
+    [...cloud.members].sort((a, b) => (a.nick || "").localeCompare(b.nick || "", "ko")).forEach((m) => {
+      const el = document.createElement("div"); el.className = "mate" + (m.id === cloud.user?.uid ? " me" : "");
+      el.innerHTML = avatarSVG({ ...{ skin: 0, hair: 0, hairColor: 0, eyes: 0, acc: 0, shirt: 0 }, ...(m.avatar || {}) });
+      const n = document.createElement("b"); n.textContent = m.nick || "?";
+      const l = document.createElement("span"); l.className = "small muted"; l.textContent = `Lv.${m.level || 1}`;
+      el.append(n, l); box.append(el);
+    });
+  }
+
+  let saveTimer = null;
+  function setSync(s) {
+    const t = new Date(), hm = `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+    $("sSync").textContent = s === "saving" ? "☁️ 저장 중…" : s === "saved" ? `☁️ 저장됨 ${hm}` : "⚠️ 저장 못 함 (인터넷 확인)";
+  }
+  store.onChange = (k) => {
+    if (!["sg.game", "sg.pets", "sg.avatar"].includes(k) || cloud.role !== "student" || !cloud.info?.nick) return;
+    clearTimeout(saveTimer); setSync("saving"); saveTimer = setTimeout(cloudSave, 4000);
+  };
+  async function cloudSave() {
+    if (cloud.role !== "student" || !cloud.user || !cloud.info?.code) return;
+    try {
+      await fb.setDoc(fb.doc(fb.db, "classes", cloud.info.code, "members", cloud.user.uid), buildPayload(), { merge: true });
+      setSync("saved");
+    } catch (e) { console.error(e); setSync("error"); }
+  }
+
+  let logoutArmed = null;
+  $("sLogout").addEventListener("click", async () => {
+    if (!logoutArmed) {
+      $("sLogout").textContent = "정말 나갈까요? 한 번 더 누르기";
+      logoutArmed = setTimeout(() => { logoutArmed = null; $("sLogout").textContent = "나가기 (로그아웃)"; }, 4000);
+      return;
+    }
+    clearTimeout(saveTimer); await cloudSave();
+    await fb.signOut(fb.auth);
+    ["sg.game", "sg.pets", "sg.avatar", "sg.records", "sg.cloud"].forEach((k) => localStorage.removeItem(k));
+    location.reload();
+  });
+
+  // ---- 선생님 ----
+  $("tLogin").addEventListener("click", async () => {
+    $("tMsg").textContent = "";
+    try {
+      const f = await loadFirebase();
+      const p = new f.GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" });
+      try { await f.signInWithPopup(f.auth, p); }
+      catch (e) { if (/popup-blocked|operation-not-supported/.test(e.code || "")) await f.signInWithRedirect(f.auth, p); else throw e; }
+    } catch (e) {
+      console.error(e);
+      if (!/popup-closed|cancelled-popup/.test(e.code || "")) $("tMsg").textContent = "로그인하지 못했어요. 다시 해 주세요.";
+    }
+  });
+  $("tLogout").addEventListener("click", () => fb.signOut(fb.auth));
+
+  async function startTeacher() {
+    try {
+      const s = await fb.getDoc(fb.doc(fb.db, "teachers", cloud.user.uid));
+      cloud.classes = s.exists() ? s.data().classes || [] : [];
+      cloud.sel = cloud.classes.some((c) => c.code === cloud.sel) ? cloud.sel : cloud.classes[0]?.code || null;
+      watchClass();
+    } catch (e) { console.error(e); $("tMsg2").textContent = "학급 목록을 불러오지 못했어요."; }
+  }
+  function watchClass() {
+    stopWatching(); cloud.members = []; cloud.classDoc = null;
+    renderTeacher();
+    if (!cloud.sel) return;
+    cloud.unsub.push(fb.onSnapshot(fb.doc(fb.db, "classes", cloud.sel), (s) => { cloud.classDoc = s.data() || null; renderTeacher(); }, console.error));
+    cloud.unsub.push(fb.onSnapshot(fb.collection(fb.db, "classes", cloud.sel, "members"), (snap) => {
+      cloud.members = snap.docs.map((d) => ({ id: d.id, ...d.data() })); renderTeacher();
+    }, (e) => { console.error(e); $("tMsg2").textContent = "학생 목록을 불러오지 못했어요."; }));
+  }
+
+  $("tCreate").addEventListener("click", async () => {
+    $("tMsg2").textContent = "";
+    const name = $("tNewName").value.trim().slice(0, 20);
+    if (!name) { $("tMsg2").textContent = "학급 이름을 써 주세요 (예: 6학년 2반)."; return; }
+    const ABC = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 헷갈리는 I, O, 0, 1은 빼요
+    $("tCreate").disabled = true;
+    try {
+      for (let i = 0; i < 5; i++) {
+        const r = crypto.getRandomValues(new Uint8Array(6));
+        const code = [...r].map((b) => ABC[b % ABC.length]).join("");
+        const ref = fb.doc(fb.db, "classes", code);
+        if ((await fb.getDoc(ref)).exists()) continue;
+        await fb.setDoc(ref, { name, teacherUid: cloud.user.uid, rankingOn: true, createdAt: fb.serverTimestamp() });
+        cloud.classes.push({ code, name });
+        await fb.setDoc(fb.doc(fb.db, "teachers", cloud.user.uid), { classes: cloud.classes }, { merge: true });
+        cloud.sel = code; $("tNewName").value = "";
+        toast(`학급을 만들었어요! 코드: ${code}`, 3000);
+        watchClass(); return;
+      }
+      $("tMsg2").textContent = "학급 코드를 만들지 못했어요. 다시 눌러 주세요.";
+    } catch (e) { console.error(e); $("tMsg2").textContent = "학급을 만들지 못했어요."; }
+    finally { $("tCreate").disabled = false; }
+  });
+  $("tClassSel").addEventListener("change", (e) => { cloud.sel = e.target.value; watchClass(); });
+  $("tRanking").addEventListener("change", async (e) => {
+    try { await fb.updateDoc(fb.doc(fb.db, "classes", cloud.sel), { rankingOn: e.target.checked }); toast(e.target.checked ? "순위를 보여 줘요" : "순위를 숨겼어요"); }
+    catch (err) { console.error(err); $("tMsg2").textContent = "바꾸지 못했어요."; }
+  });
+  const kickArmed = {};
+  $("tMembers").addEventListener("click", async (e) => {
+    const b = e.target.closest("button[data-id]"); if (!b) return;
+    const id = b.dataset.id;
+    if (!kickArmed[id]) { kickArmed[id] = setTimeout(() => { delete kickArmed[id]; renderTeacher(); }, 4000); b.textContent = "정말요?"; return; }
+    clearTimeout(kickArmed[id]); delete kickArmed[id];
+    try { await fb.deleteDoc(fb.doc(fb.db, "classes", cloud.sel, "members", id)); toast("학생을 내보냈어요"); }
+    catch (err) { console.error(err); $("tMsg2").textContent = "내보내지 못했어요."; }
+  });
+
+  function renderTeacher() {
+    if (cloud.role !== "teacher") return;
+    const sel = $("tClassSel"); sel.textContent = "";
+    if (!cloud.classes.length) { const o = document.createElement("option"); o.textContent = "아직 학급이 없어요"; o.value = ""; sel.append(o); sel.disabled = true; }
+    else { sel.disabled = false; cloud.classes.forEach((c) => { const o = document.createElement("option"); o.value = c.code; o.textContent = `${c.name} (${c.code})`; sel.append(o); }); sel.value = cloud.sel || ""; }
+    $("tClassCard").hidden = !cloud.sel;
+    if (!cloud.sel) return;
+    $("tCode").textContent = cloud.sel;
+    $("tRanking").checked = cloud.classDoc ? cloud.classDoc.rankingOn !== false : true;
+    $("tCount").textContent = `(${cloud.members.length}명)`;
+    const ws = dayKey(weekStart()), today = dayKey(Date.now());
+    const body = $("tMembers"); body.textContent = "";
+    if (!cloud.members.length) {
+      const tr = document.createElement("tr"); const td = document.createElement("td"); td.colSpan = 7; td.className = "muted";
+      td.textContent = "아직 들어온 학생이 없어요. 학생들에게 위의 학급 코드를 알려 주세요."; tr.append(td); body.append(tr);
+    }
+    [...cloud.members].sort((a, b) => (b.total || 0) - (a.total || 0)).forEach((m) => {
+      const tr = document.createElement("tr");
+      const nm = document.createElement("td"); const wrap = document.createElement("div"); wrap.className = "nm";
+      wrap.innerHTML = avatarSVG({ skin: 0, hair: 0, hairColor: 0, eyes: 0, acc: 0, shirt: 0, ...(m.avatar || {}) });
+      const nick = document.createElement("b"); nick.textContent = m.nick || "?"; wrap.append(nick); nm.append(wrap);
+      const fresh = m.updatedAt?.toDate?.() && dayKey(m.updatedAt.toDate()) === today;
+      const cells = [`Lv.${m.level || 1}`, `${fresh ? m.today || 0 : 0}점`, `${m.weekStart === ws ? m.week || 0 : 0}점`, `${m.total || 0}점`, fmtTime(m.updatedAt)];
+      tr.append(nm, ...cells.map((t) => { const td = document.createElement("td"); td.textContent = t; return td; }));
+      const act = document.createElement("td"); const kb = document.createElement("button"); kb.type = "button"; kb.dataset.id = m.id;
+      kb.textContent = kickArmed[m.id] ? "정말요?" : "내보내기"; act.append(kb); tr.append(act);
+      body.append(tr);
+    });
+  }
+
   // ---------- 공유 QR ----------
   const appUrl = () => location.origin + location.pathname.replace(/index\.html$/, "");
   $("shareBtn").addEventListener("click", () => {
@@ -1763,7 +2155,7 @@
   });
 
   // 테스트용
-  window.__sg = { S, classify, tick, startSession, game, addPoints, renderUniverse, showLevelUp, levelOf, pets, petProgress, renderPets, avatar, M, startMed, medTick, endMed, trackMetrics, metricsTick };
+  window.__sg = { S, classify, tick, startSession, game, addPoints, renderUniverse, showLevelUp, levelOf, pets, petProgress, renderPets, avatar, M, startMed, medTick, endMed, trackMetrics, metricsTick, cloud, buildPayload, studentEmail };
 </script>
 </body>
 </html>
