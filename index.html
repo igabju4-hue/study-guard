@@ -197,6 +197,19 @@
   .opts button.sw { width: 44px; padding: 0; border-radius: 50%; }
   .opts button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
 
+  /* 명상 */
+  .med { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 16px; }
+  .med-step { display: grid; gap: 16px; justify-items: center; text-align: center; }
+  .med-step label { justify-self: stretch; text-align: left; }
+  .breath {
+    --s: .7; width: min(230px, 60vw); aspect-ratio: 1; border-radius: 50%;
+    display: grid; place-items: center; transform: scale(var(--s));
+    background: radial-gradient(circle at 40% 35%, #8fe3c8, var(--accent) 70%);
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--accent) 18%, transparent);
+    color: #fff; font-family: var(--display); font-size: 2rem;
+  }
+  .state[data-s="think"] { border-color: var(--warn); } .state[data-s="think"] .dot { background: var(--warn); }
+
   /* 점수 알림 */
   .toast {
     position: fixed; z-index: 30; left: 50%; transform: translateX(-50%);
@@ -211,7 +224,7 @@
   button { user-select: none; -webkit-user-select: none; }
 
   @media (max-width: 820px) and (orientation: portrait), (max-width: 700px) {
-    .setup, .calib, .session, .result, .universe, .pets, .avatar-view { grid-template-columns: minmax(0, 1fr); }
+    .setup, .calib, .session, .result, .universe, .pets, .avatar-view, .med { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 560px) {
     .partner { grid-template-columns: minmax(0, 1fr); }
@@ -315,6 +328,7 @@
       <button id="camBtn" type="button" disabled>카메라 켜기</button>
       <button id="calibBtn" type="button" hidden>자세 알려주기 시작</button>
       <button id="skipCalibBtn" type="button" class="ghost" hidden>저번 자세로 시작</button>
+      <button id="medBtn" type="button" class="ghost" hidden>🧘 명상하기</button>
     </div>
     <p class="small muted">카메라 화면은 이 기기 안에서만 쓰고, 저장하거나 보내지 않아요.</p>
   </div>
@@ -390,6 +404,44 @@
   </div>
 </section>
 
+<!-- 명상 (7단계) -->
+<section id="vMed" class="med" hidden>
+  <div class="cam" id="medCam"><span class="tag">내 모습</span></div>
+  <div class="panel med-panel">
+    <div id="medSetup" class="med-step">
+      <h2>🧘 명상하기</h2>
+      <p class="muted">눈을 감고 숨을 천천히 쉬어요. 카메라가 <b>눈 감기</b>, <b>바른 자세</b>, <b>가만히 있기</b>를 확인해요.</p>
+      <label for="medMin">몇 분 할까요?
+        <select id="medMin">
+          <option value="1">1분</option>
+          <option value="3" selected>3분</option>
+          <option value="5">5분</option>
+        </select>
+      </label>
+      <label class="row small" for="medSound" style="display:flex"><input type="checkbox" id="medSound" checked> 소리로 숨쉬기 알려 주기 (눈을 감아도 알 수 있어요)</label>
+      <p class="small muted">명상 1분 = 1점 · 하루 최대 10점</p>
+      <div class="row">
+        <button id="medStart" type="button">시작하기</button>
+        <button id="medBack" type="button" class="ghost">돌아가기</button>
+      </div>
+    </div>
+    <div id="medRun" class="med-step" hidden>
+      <div class="breath" id="breath"><span id="breathTxt">3</span></div>
+      <div class="state" id="medState" data-s="think"><span class="dot"></span><span id="medStateTxt">⏳ 눈을 뜬 채 편하게 정면을 봐요</span></div>
+      <div class="stats">
+        <div class="stat"><b id="medLeft">00:00</b><span>남은 시간</span></div>
+        <div class="stat"><b id="medDoneSec">00:00</b><span>고요한 시간</span></div>
+      </div>
+      <button id="medStop" type="button" class="ghost">그만하기</button>
+    </div>
+    <div id="medDone" class="med-step" hidden>
+      <h2>수고했어요 🌿</h2>
+      <p id="medSummary"></p>
+      <button id="medDoneBtn" type="button">처음으로</button>
+    </div>
+  </div>
+</section>
+
 <!-- 2. 자세 알려주기 -->
 <section id="vCalib" class="calib" hidden>
   <div class="cam" id="calibCam"><span class="tag">내 모습</span></div>
@@ -416,7 +468,9 @@
       <div class="stat"><b id="rate">–</b><span>집중률</span></div>
       <div class="stat"><b id="awayCount">0</b><span>딴짓 횟수</span></div>
       <div class="stat"><b id="todayPts">0/180</b><span>오늘 점수 ⭐</span></div>
+      <div class="stat"><b id="focusScore">–</b><span>집중 점수 🎯</span></div>
     </div>
+    <p class="small muted" id="metricsLine"></p>
     <div class="row">
       <button id="pauseBtn" type="button" class="ghost">잠깐 쉬기</button>
       <button id="stopBtn" type="button">공부 끝!</button>
@@ -452,6 +506,7 @@
       </div>
     </div>
     <p class="points-line" id="dPoints"></p>
+    <p class="small muted" id="dMetrics"></p>
     <p id="doneSummary"></p>
   </div>
   <div class="panel reflect">
@@ -487,7 +542,7 @@
   let audioCtx = null;
 
   // ---------- 화면 전환 ----------
-  const views = ["vSetup", "vCalib", "vSession", "vDone", "vPets", "vAvatar"];
+  const views = ["vSetup", "vCalib", "vSession", "vDone", "vPets", "vAvatar", "vMed"];
   function show(id, camHolder) {
     for (const v of views) $(v).hidden = v !== id;
     $("vRecords").hidden = id !== "vSetup";
@@ -495,6 +550,7 @@
     $("tabs").hidden = !["vSetup", "vPets", "vAvatar"].includes(id);
     for (const b of $("tabs").querySelectorAll("button")) b.setAttribute("aria-selected", String(b.dataset.v === id));
     if (id === "vSetup") renderUniverse();
+    $("medBtn").hidden = !video.srcObject;
     if (id === "vPets") renderPets();
     if (id === "vAvatar") renderAvatar();
     if (id === "vSetup") renderRecords();
@@ -569,13 +625,16 @@
     const clamp = (x) => Math.max(-1, Math.min(1, x));
     const down = m ? Math.asin(clamp(-m[9])) * DEG : 0;   // + 아래
     const left = m ? Math.asin(clamp(m[8])) * DEG : 0;    // + 내 왼쪽
-    let blink = 0;
+    let blink = 0, jaw = 0;
     const bs = res.faceBlendshapes?.[0]?.categories;
     if (bs) {
       const s = Object.fromEntries(bs.map((c) => [c.categoryName, c.score]));
       blink = (s.eyeBlinkLeft + s.eyeBlinkRight) / 2;
+      jaw = s.jawOpen || 0; // 입 벌림 (하품)
     }
-    return { face: true, down, left, blink };
+    let minX = 1, maxX = 0; // 얼굴 너비 (너무 가까운지)
+    for (const p of face) { if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x; }
+    return { face: true, down, left, blink, jaw, faceW: maxX - minX };
   }
 
   // ---------- 3. 자세 알려주기 ----------
@@ -658,13 +717,14 @@
       focusSec: 0, sitSec: 0, pending: 0, nonFocusRun: 0, noFaceRun: 0, closedRun: 0,
       awayCount: 0, wasRed: false, votes: [], touchedAt: 0,
       runSec: 0, bonusBlocks: 0, creditedMin: 0, sessionPoints: 0, levelBefore: levelOf(game.total),
+      m: newMetrics(),
       timeline: [], // 1초마다 상태 기록 (3단계 그래프용)
     });
     $("sessSubject").textContent = settings.subject;
     $("pauseBtn").textContent = "잠깐 쉬기";
     show("vSession", $("showCam").checked ? "sessCam" : null);
     if (!$("showCam").checked) video.hidden = true;
-    onFrame = (f) => { S.votes.push(classify(f, calib)); S.last = f; };
+    onFrame = (f) => { S.votes.push(classify(f, calib)); S.last = f; trackMetrics(f); };
     clearInterval(tickTimer);
     tickTimer = setInterval(tick, 1000);
     keepAwake();
@@ -713,6 +773,7 @@
     if (red) { S.runSec = 0; S.bonusBlocks = 0; }
     S.timeline.push(shown);
     awardPoints();
+    metricsTick(shown);
     render(shown);
   }
 
@@ -734,6 +795,9 @@
     $("awayCount").textContent = S.awayCount;
     $("todayPts").textContent = todayPoints() + "/" + DAILY_MAX;
     updateBuddy(state);
+    const m = S.m;
+    $("focusScore").textContent = m && m.score != null ? m.score : "–";
+    $("metricsLine").textContent = m ? `🥱 하품 ${m.yawns}번 · 👁️ 깜빡임 ${m.blinkWindow.length}회/분 · 📏 ${m.closeRun > 0 ? "너무 가까워요!" : "거리 좋아요"}` : "";
     const f = S.last;
     $("debug").textContent = f?.face
       ? `고개 위아래 ${f.down.toFixed(0)}° (책 ${S.calib.book.down.toFixed(0)}°) · 좌우 ${f.left.toFixed(0)}° · 눈 감김 ${Math.round(f.blink * 100)}%`
@@ -766,6 +830,7 @@
     };
     rec.bestSec = longestFocus(S.timeline);
     rec.points = S.sessionPoints;
+    rec.metrics = summarizeMetrics();
     const all = store.get("sg.records") || [];
     all.push(rec); store.set("sg.records", all.slice(-200));
     showResult(rec);
@@ -809,6 +874,8 @@
     let msg = rate >= 80 ? "대단해요! 정말 집중을 잘했어요. 👏" : rate >= 50 ? "좋아요! 조금만 더 하면 집중 고수예요. 💪" : "괜찮아요. 집중이 깨진 순간을 돌아보면 다음엔 더 잘할 수 있어요. 🌱";
     $("doneSummary").textContent = `딴짓 ${rec.awayCount}번 · ${msg}`;
     drawTimeline(rec.timeline);
+    const mt = rec.metrics;
+    $("dMetrics").textContent = mt ? `🎯 평균 집중 점수 ${mt.avgScore}점 · 🥱 하품 ${mt.yawns}번 · 👁️ 눈 깜빡임 ${mt.blinkPerMin}회/분 · 📏 너무 가까움 ${mt.closeCount}번` : "";
     $("dPoints").textContent = `⭐ +${rec.points || 0}점 · 🎟️ 티켓 ${ticketsLeft()}장 · 오늘 ${todayPoints()}/${DAILY_MAX}점`;
     const lvNow = levelOf(game.total);
     if (S.levelBefore && lvNow > S.levelBefore) showLevelUp(S.levelBefore, lvNow);
@@ -843,6 +910,7 @@
     let todaySec = 0, weekSec = 0;
     const days = new Set();
     for (const r of all) {
+      if (r.type === "med") continue; // 명상은 공부 시간에 넣지 않아요
       if (dayKey(r.startedAt) === today) todaySec += r.focusSec;
       if (r.startedAt >= monday.getTime()) weekSec += r.focusSec;
       if (r.focusSec >= 60) days.add(dayKey(r.startedAt));
@@ -1480,6 +1548,198 @@
   });
   renderMe();
 
+  // ---------- 7단계: 더 많은 측정 (하품 · 눈 깜빡임 · 흔들림 · 거리) ----------
+  function newMetrics() {
+    return {
+      blinks: 0, eyeClosed: false, closeStart: 0, blinkWindow: [],
+      yawns: 0, yawnTimes: [], yawning: false, yawnStart: 0, yawnCounted: false,
+      prev: null, secMove: 0, secMoveN: 0, secClose: 0, secFrames: 0,
+      moveRun: 0, closeRun: 0, closeCount: 0, secs: [], score: null, scoreLog: [], warnAt: {},
+    };
+  }
+
+  // 프레임마다 (1초에 약 10번)
+  function trackMetrics(f) {
+    const m = S.m, now = performance.now();
+    if (!m) return;
+    if (!f.face) { m.prev = null; return; }
+    const th = S.calib.blinkLimit;
+    if (!m.eyeClosed && f.blink > th) { m.eyeClosed = true; m.closeStart = now; }
+    else if (m.eyeClosed && f.blink < th - 0.15) {
+      m.eyeClosed = false;
+      if (now - m.closeStart < 600) { m.blinks++; m.blinkWindow.push(Date.now()); } // 짧게 감았다 뜨면 깜빡임
+    }
+    if (f.jaw > 0.5) { // 입을 크게 1.2초 넘게 벌리면 하품
+      if (!m.yawning) { m.yawning = true; m.yawnStart = now; m.yawnCounted = false; }
+      else if (!m.yawnCounted && now - m.yawnStart > 1200) { m.yawnCounted = true; m.yawns++; m.yawnTimes.push(Date.now()); }
+    } else if (f.jaw < 0.3) m.yawning = false;
+    if (m.prev) { m.secMove += Math.abs(f.down - m.prev.down) + Math.abs(f.left - m.prev.left); m.secMoveN++; }
+    m.prev = f;
+    m.secFrames++;
+    if (f.faceW > 0.55) m.secClose++;
+  }
+
+  // 1초마다: 경고 + 집중 점수
+  function metricsTick(shown) {
+    const m = S.m, now = Date.now();
+    const move = m.secMoveN ? m.secMove / m.secMoveN : 0;
+    const close = m.secFrames ? m.secClose / m.secFrames > 0.5 : false;
+    m.secMove = m.secMoveN = m.secClose = m.secFrames = 0;
+    m.moveRun = move > 3 ? m.moveRun + 1 : 0;
+    m.closeRun = close ? m.closeRun + 1 : 0;
+    if (m.closeRun === 5) m.closeCount++;
+    m.blinkWindow = m.blinkWindow.filter((t) => now - t < 60000);
+    m.secs.push({ ok: shown === "focus" || shown === "think", move });
+    if (m.secs.length > 60) m.secs.shift();
+
+    const warn = (key, gap, text) => {
+      if (m.warnAt[key] && now - m.warnAt[key] < gap) return;
+      m.warnAt[key] = now; toast(text, 4000);
+      $("buddyLine").textContent = text; buddyAt = now;
+    };
+    if (m.yawnTimes.filter((t) => now - t < 300000).length >= 3) warn("yawn", 300000, "하품을 자주 해요 🥱 일어나서 기지개 쭉!");
+    if (m.closeRun >= 5) warn("close", 120000, "너무 가까워요 👀 조금 뒤로 앉아요");
+    if (S.sitSec >= 60 && m.blinkWindow.length > 35) warn("blink", 600000, "눈이 피곤해 보여요. 먼 곳을 20초 바라봐요 🌳");
+    if (m.moveRun >= 10) warn("move", 180000, "몸이 들썩들썩! 바른 자세로 앉아 볼까? 🪑");
+
+    // 집중 점수 (최근 60초): 집중한 비율 − 흔들림 − 하품 − 피곤한 눈 − 너무 가까움
+    const ok = m.secs.filter((s) => s.ok).length / m.secs.length;
+    const avgMove = m.secs.reduce((a, s) => a + s.move, 0) / m.secs.length;
+    const yawnsNow = m.yawnTimes.filter((t) => now - t < 60000).length;
+    const score = ok * 100 - (avgMove > 3 ? 10 : avgMove > 2 ? 5 : 0) - yawnsNow * 5
+      - (m.blinkWindow.length > 35 ? 10 : 0) - (m.closeRun > 0 ? 5 : 0);
+    m.score = Math.max(0, Math.min(100, Math.round(score)));
+    if (S.sitSec % 60 === 0) m.scoreLog.push(m.score);
+  }
+
+  function summarizeMetrics() {
+    const m = S.m; if (!m) return null;
+    const log = [...m.scoreLog];
+    if (m.score != null && S.sitSec % 60 !== 0) log.push(m.score); // 마지막 1분이 덜 찼어도 넣기
+    return {
+      avgScore: log.length ? Math.round(log.reduce((a, b) => a + b, 0) / log.length) : 0,
+      yawns: m.yawns,
+      blinkPerMin: S.sitSec ? Math.round(m.blinks / (S.sitSec / 60)) : 0,
+      closeCount: m.closeCount,
+    };
+  }
+
+  // ---------- 7단계: 명상 모드 ----------
+  const MED_DAILY = 10;
+  const M = { running: false };
+  const MED_TXT = {
+    prep: ["⏳", "눈을 뜬 채 편하게 정면을 봐요"], med: ["🧘", "명상 중이에요"], open: ["👀", "눈을 살며시 감아요"],
+    nod: ["😴", "고개가 숙여졌어요. 허리를 펴요"], move: ["🌀", "몸을 가만히 해 봐요"], noface: ["⚪", "얼굴이 안 보여요"],
+  };
+  const MED_COLOR = { prep: "think", med: "focus", open: "think", nod: "away", move: "away", noface: "away" };
+
+  $("medBtn").addEventListener("click", () => {
+    show("vMed", "medCam");
+    $("medSetup").hidden = false; $("medRun").hidden = true; $("medDone").hidden = true;
+  });
+  $("medBack").addEventListener("click", goHome);
+  $("medDoneBtn").addEventListener("click", goHome);
+  $("medStart").addEventListener("click", startMed);
+  $("medStop").addEventListener("click", () => endMed());
+
+  function tone(freq, dur = 0.6, vol = 0.06) {
+    if (!audioCtx || !$("medSound").checked) return;
+    try {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t = audioCtx.currentTime;
+      o.type = "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.05); g.gain.linearRampToValueAtTime(0, t + dur);
+      o.connect(g).connect(audioCtx.destination); o.start(t); o.stop(t + dur + 0.05);
+    } catch {}
+  }
+
+  function classifyMed(f) {
+    if (!f.face) return "noface";
+    if (f.down - M.base > 15) return "nod";        // 고개가 떨어지면 졸음
+    if (f.blink < 0.45) return "open";             // 눈을 떴어요
+    if (M.prev && Math.abs(f.down - M.prev.down) + Math.abs(f.left - M.prev.left) > 3) return "move";
+    return "med";
+  }
+
+  function setMedState(s) {
+    $("medState").dataset.s = MED_COLOR[s];
+    $("medStateTxt").textContent = MED_TXT[s].join(" ");
+  }
+
+  function startMed() {
+    const total = Number($("medMin").value) * 60;
+    Object.assign(M, { running: true, total, left: total, medSec: 0, votes: [], prev: null, base: 0, baseSamples: [], phase: "prep", prepLeft: 3, ph: -1, startedAt: Date.now(), t0: performance.now() });
+    $("medSetup").hidden = true; $("medRun").hidden = false;
+    $("breathTxt").textContent = "3";
+    $("medLeft").textContent = mmss(total); $("medDoneSec").textContent = "00:00";
+    setMedState("prep");
+    onFrame = (f) => {
+      if (M.phase === "prep") { if (f.face) M.baseSamples.push(f.down); return; }
+      M.votes.push(classifyMed(f)); M.prev = f.face ? f : null;
+    };
+    keepAwake();
+    clearInterval(M.timer); M.timer = setInterval(medTick, 1000);
+    cancelAnimationFrame(M.raf); M.raf = requestAnimationFrame(breathLoop);
+  }
+
+  function medTick() {
+    if (!M.running) return;
+    if (M.phase === "prep") { // 처음 3초: 바른 자세 기억하기
+      M.prepLeft--;
+      $("breathTxt").textContent = M.prepLeft > 0 ? String(M.prepLeft) : "눈 감기";
+      if (M.prepLeft <= 0) {
+        M.base = M.baseSamples.length ? M.baseSamples.reduce((a, b) => a + b, 0) / M.baseSamples.length : 0;
+        M.phase = "run"; M.t0 = performance.now(); M.ph = -1;
+        setMedState("open");
+      }
+      return;
+    }
+    let sec = "noface";
+    if (!document.hidden && M.votes.length) {
+      const n = {}; for (const v of M.votes) n[v] = (n[v] || 0) + 1;
+      sec = Object.entries(n).sort((a, b) => b[1] - a[1])[0][0];
+    }
+    M.votes = [];
+    if (sec === "med") M.medSec++;
+    M.left--;
+    setMedState(sec);
+    $("medLeft").textContent = mmss(Math.max(0, M.left));
+    $("medDoneSec").textContent = mmss(M.medSec);
+    if (M.left <= 0) endMed();
+  }
+
+  // 숨쉬기 안내: 4초 들이쉬기 · 4초 참기 · 4초 내쉬기
+  function breathLoop(t) {
+    if (!M.running) return;
+    M.raf = requestAnimationFrame(breathLoop);
+    if (M.phase !== "run") { $("breath").style.setProperty("--s", "0.7"); return; }
+    const c = ((t - M.t0) / 1000) % 12;
+    let s, txt, ph;
+    if (c < 4) { s = 0.6 + 0.4 * (c / 4); txt = "들이쉬기"; ph = 0; }
+    else if (c < 8) { s = 1; txt = "참기"; ph = 1; }
+    else { s = 1 - 0.4 * ((c - 8) / 4); txt = "내쉬기"; ph = 2; }
+    $("breath").style.setProperty("--s", (reduceMotion ? 0.85 : s).toFixed(3));
+    if (ph !== M.ph) { M.ph = ph; $("breathTxt").textContent = txt; tone([523, 659, 392][ph]); }
+  }
+
+  function endMed() {
+    if (!M.running) return;
+    M.running = false; clearInterval(M.timer); cancelAnimationFrame(M.raf); onFrame = null;
+    tone(784, 1.2, 0.07);
+    game.medDays = game.medDays || {};
+    const k = dayKey(Date.now()), used = game.medDays[k] || 0;
+    const want = Math.min(Math.floor(M.medSec / 60), MED_DAILY - used);
+    const got = want > 0 ? addPoints(want, "🧘 명상") : 0;
+    game.medDays[k] = used + got; saveGame();
+    const sat = M.total - Math.max(0, M.left);
+    const all = store.get("sg.records") || [];
+    all.push({ type: "med", subject: "🧘 명상", startedAt: M.startedAt, endedAt: Date.now(), focusSec: M.medSec, sitSec: sat, awayCount: 0, timeline: [], points: got });
+    store.set("sg.records", all.slice(-200));
+    const rate = sat ? Math.round((M.medSec / sat) * 100) : 0;
+    const extra = got ? `⭐ +${got}점!` : used >= MED_DAILY ? "오늘 명상 점수(10점)는 다 모았어요." : "1분 넘게 고요하게 있으면 점수를 받아요.";
+    $("medSummary").textContent = `${mmss(sat)} 중 ${mmss(M.medSec)} 동안 고요하게 명상했어요 (${rate}%). ${extra}`;
+    $("medRun").hidden = true; $("medDone").hidden = false;
+  }
+
   // ---------- 공유 QR ----------
   const appUrl = () => location.origin + location.pathname.replace(/index\.html$/, "");
   $("shareBtn").addEventListener("click", () => {
@@ -1503,7 +1763,7 @@
   });
 
   // 테스트용
-  window.__sg = { S, classify, tick, startSession, game, addPoints, renderUniverse, showLevelUp, levelOf, pets, petProgress, renderPets, avatar };
+  window.__sg = { S, classify, tick, startSession, game, addPoints, renderUniverse, showLevelUp, levelOf, pets, petProgress, renderPets, avatar, M, startMed, medTick, endMed, trackMetrics, metricsTick };
 </script>
 </body>
 </html>
