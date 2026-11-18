@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>공부 지킴이</title>
+<meta name="description" content="카메라로 진짜 공부한 시간만 세어 주는 집중 타이머">
+<meta name="theme-color" content="#1f8a6d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="공부 지킴이">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap">
+<style>
+  /* 레이아웃: 화면 하나씩 바뀌는 앱(준비 → 자세 알려주기 → 공부 중 → 끝). 태블릿 가로 기준, 세로·폰에서는 위아래로 */
+  :root {
+    --bg: #eef4f1; --panel: #ffffff; --ink: #1d2b27; --muted: #5d6f69; --line: #d3e0da;
+    --accent: #1f8a6d; --accent-ink: #ffffff;
+    --good: #1f9d55; --warn: #d99a00; --bad: #d64545; --off: #8a9a95;
+    --display: "Jua", "Noto Sans KR", system-ui, sans-serif;
+    --body: "Noto Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101816; --panel: #19231f; --ink: #e6efeb; --muted: #9cb0a9; --line: #2b3a35;
+      --accent: #3fbf98; --accent-ink: #0d1a16;
+      --good: #4cc77f; --warn: #f0b93a; --bad: #f07070; --off: #6f817b;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.5;
+    padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  }
+  h1, h2 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.6rem; }
+  p { margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .chip { font-size: .85rem; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+  button, select {
+    font: inherit; border-radius: 16px; min-height: 52px;
+  }
+  button { font-family: var(--display); font-size: 1.3rem; border: 0; cursor: pointer; background: var(--accent); color: var(--accent-ink); padding: 12px 28px; }
+  button.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+  button:disabled { opacity: .5; cursor: wait; }
+  button:focus-visible, select:focus-visible { outline: 3px solid var(--warn); outline-offset: 3px; }
+  select { background: var(--panel); color: var(--ink); border: 2px solid var(--line); padding: 8px 14px; min-width: 0; }
+  label { display: grid; gap: 6px; font-size: .9rem; color: var(--muted); }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 20px; }
+  .err { color: var(--bad); }
+  .muted { color: var(--muted); }
+  .small { font-size: .85rem; }
+
+  /* 카메라 */
+  .cam { position: relative; background: #000; border-radius: 20px; overflow: hidden; aspect-ratio: 4 / 3; max-width: 100%; }
+  .cam video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+  .cam .tag { position: absolute; left: 10px; bottom: 10px; background: rgba(0,0,0,.6); color: #fff; font-size: .8rem; padding: 2px 10px; border-radius: 999px; }
+
+  /* 준비 화면 */
+  .setup { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; }
+  .setup .panel { display: grid; gap: 18px; align-content: start; }
+  .steps { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+  /* 자세 알려주기 */
+  .calib { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; }
+  .calib .panel { display: grid; gap: 14px; align-content: center; text-align: center; }
+  .big-emoji { font-size: 4rem; line-height: 1; }
+  .count { font-family: var(--display); font-size: 4rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .bar { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--accent); }
+
+  /* 공부 중 */
+  .session { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; }
+  .clock { display: grid; gap: 14px; justify-items: center; text-align: center; padding: 28px 20px; }
+  .clock .label { color: var(--muted); letter-spacing: .04em; }
+  .time { font-family: var(--display); font-size: clamp(4rem, 13vw, 8rem); line-height: 1; font-variant-numeric: tabular-nums; }
+  .state { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 1.5rem; padding: 8px 22px; border-radius: 999px; border: 3px solid var(--off); }
+  .state .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--off); }
+  .state[data-s="focus"] { border-color: var(--good); } .state[data-s="focus"] .dot { background: var(--good); }
+  .state[data-s="think"] { border-color: var(--warn); } .state[data-s="think"] .dot { background: var(--warn); }
+  .state[data-s="away"], .state[data-s="sleepy"], .state[data-s="screen"] { border-color: var(--bad); }
+  .state[data-s="away"] .dot, .state[data-s="sleepy"] .dot, .state[data-s="screen"] .dot { background: var(--bad); }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 520px; }
+  .stat { border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+  .stat b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: .8rem; color: var(--muted); }
+  .side { display: grid; gap: 12px; align-content: start; }
+  .debug { font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* 끝 */
+  .done { display: grid; gap: 16px; max-width: 640px; margin: 0 auto; text-align: center; }
+  .done .time { font-size: clamp(3rem, 10vw, 5.5rem); color: var(--accent); }
+
+  /* 결과 */
+  .result { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; }
+  .result .done { max-width: none; margin: 0; align-content: start; }
+  .reflect { display: grid; gap: 14px; align-content: start; }
+  textarea { font: inherit; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 12px; padding: 10px 12px; resize: vertical; width: 100%; }
+  textarea:focus-visible { outline: 3px solid var(--warn); outline-offset: 2px; }
+  .tl-wrap { display: grid; gap: 6px; text-align: left; }
+  .tl { display: flex; height: 34px; border-radius: 10px; overflow: hidden; background: var(--line); }
+  .tl i { flex: 1 1 0; min-width: 0; }
+  .tl-axis { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
+
+  /* 내 기록 */
+  .records { display: grid; gap: 16px; margin-top: 16px; }
+  .sum-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .sum { display: grid; gap: 2px; padding: 14px 18px; }
+  .sum b { font-family: var(--display); font-weight: 400; font-size: 1.8rem; font-variant-numeric: tabular-nums; }
+  .rec-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+  .rec-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; border-top: 1px solid var(--line); padding-top: 8px; }
+  .rec-list .t { font-family: var(--display); font-size: 1.2rem; font-variant-numeric: tabular-nums; text-align: right; }
+  .rec-list .r { grid-column: 1 / -1; font-size: .85rem; color: var(--muted); overflow-wrap: anywhere; }
+  .small-btn { font-size: 1rem; min-height: 44px; padding: 6px 16px; }
+
+  /* 공유 창 */
+  .modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgba(8, 20, 16, .55); }
+  .sheet { display: grid; gap: 12px; text-align: center; width: min(420px, 100%); }
+  .qr { background: #fff; border-radius: 16px; padding: 12px; justify-self: center; width: min(280px, 100%); }
+  .qr svg, .qr img { display: block; width: 100%; height: auto; }
+  .url { font-size: .85rem; color: var(--muted); overflow-wrap: anywhere; user-select: all; }
+
+  /* 태블릿 터치 다듬기 */
+  button, select, label { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  button { user-select: none; -webkit-user-select: none; }
+
+  @media (max-width: 820px) and (orientation: portrait), (max-width: 700px) {
+    .setup, .calib, .session, .result { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 480px) { .sum-row { grid-template-columns: minmax(0, 1fr); } }
+  @media (prefers-reduced-motion: no-preference) { .bar > i { transition: width .1s linear; } .state, .state .dot { transition: border-color .3s, background .3s; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>공부 지킴이</h1>
+  <button id="shareBtn" type="button" class="ghost small-btn">📲 친구에게 공유</button>
+</header>
+
+<div class="modal" id="shareModal" hidden role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+  <div class="panel sheet">
+    <h2 id="shareTitle">QR 코드로 열기</h2>
+    <p class="small muted">다른 태블릿의 카메라로 찍으면 공부 지킴이가 열려요.</p>
+    <div class="qr" id="qrBox"></div>
+    <p class="url" id="shareUrl"></p>
+    <div class="row" style="justify-content:center">
+      <button id="copyBtn" type="button" class="ghost small-btn">주소 복사</button>
+      <button id="closeShare" type="button" class="small-btn">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 숨겨진 카메라: 여러 화면이 같이 씀 -->
+<video id="video" playsinline muted hidden></video>
+
+<!-- 1. 준비 -->
+<section id="vSetup" class="setup">
+  <div class="cam" id="setupCam"><span class="tag">카메라 미리보기</span></div>
+  <div class="panel">
+    <h2>오늘 공부 준비</h2>
+    <label for="subject">무슨 공부를 할까요?
+      <select id="subject">
+        <option>과학 – 전기의 이용</option>
+        <option>수학</option>
+        <option>국어</option>
+        <option>사회</option>
+        <option>영어</option>
+        <option>기타</option>
+      </select>
+    </label>
+    <label for="grace">생각하는 시간은 몇 초까지 공부로 쳐 줄까요?
+      <select id="grace">
+        <option value="5">5초</option>
+        <option value="8" selected>8초</option>
+        <option value="15">15초</option>
+      </select>
+    </label>
+    <ol class="steps small muted">
+      <li>태블릿을 책 앞에 세워요.</li>
+      <li>얼굴이 카메라 가운데 오게 해요.</li>
+      <li>카메라를 켜고 내 자세를 알려 줘요.</li>
+    </ol>
+    <p id="setupMsg" class="small muted">공부 도우미 준비 중이에요…</p>
+    <div class="row">
+      <button id="camBtn" type="button" disabled>카메라 켜기</button>
+      <button id="calibBtn" type="button" hidden>자세 알려주기 시작</button>
+      <button id="skipCalibBtn" type="button" class="ghost" hidden>저번 자세로 시작</button>
+    </div>
+    <p class="small muted">카메라 화면은 이 기기 안에서만 쓰고, 저장하거나 보내지 않아요.</p>
+  </div>
+</section>
+
+<!-- 내 기록 (준비 화면 아래) -->
+<section id="vRecords" class="records">
+  <div class="sum-row">
+    <div class="panel sum"><span class="muted small">오늘 진짜 공부</span><b id="todayTotal">0분</b></div>
+    <div class="panel sum"><span class="muted small">이번 주 진짜 공부</span><b id="weekTotal">0분</b></div>
+    <div class="panel sum"><span class="muted small">연속 공부</span><b id="streak">0일</b></div>
+  </div>
+  <div class="panel">
+    <div class="row" style="justify-content:space-between">
+      <h2>📒 내 기록</h2>
+      <button id="clearBtn" type="button" class="ghost small-btn">기록 지우기</button>
+    </div>
+    <p id="emptyRec" class="muted small">아직 기록이 없어요. 첫 공부를 시작해 볼까요?</p>
+    <ul class="rec-list" id="recList"></ul>
+  </div>
+</section>
+
+<!-- 2. 자세 알려주기 -->
+<section id="vCalib" class="calib" hidden>
+  <div class="cam" id="calibCam"><span class="tag">내 모습</span></div>
+  <div class="panel">
+    <div class="big-emoji" id="calibEmoji">📖</div>
+    <h2 id="calibTitle">책을 보세요</h2>
+    <p id="calibDesc" class="muted">평소 공부할 때처럼 책을 내려다봐요.</p>
+    <div class="count" id="calibCount">5</div>
+    <div class="bar"><i id="calibBar"></i></div>
+    <p id="calibMsg" class="small"></p>
+  </div>
+</section>
+
+<!-- 3. 공부 중 -->
+<section id="vSession" class="session" hidden>
+  <div class="panel clock">
+    <span class="label" id="sessSubject">과학 – 전기의 이용</span>
+    <span class="label">진짜 공부 시간</span>
+    <div class="time" id="focusTime">00:00</div>
+    <div class="state" id="stateBox" data-s="focus"><span class="dot"></span><span id="stateTxt">집중하고 있어요</span></div>
+    <div class="stats">
+      <div class="stat"><b id="sitTime">00:00</b><span>앉아 있던 시간</span></div>
+      <div class="stat"><b id="rate">–</b><span>집중률</span></div>
+      <div class="stat"><b id="awayCount">0</b><span>딴짓 횟수</span></div>
+    </div>
+    <div class="row">
+      <button id="pauseBtn" type="button" class="ghost">잠깐 쉬기</button>
+      <button id="stopBtn" type="button">공부 끝!</button>
+    </div>
+  </div>
+  <div class="side">
+    <div class="cam" id="sessCam"><span class="tag">내 모습</span></div>
+    <label class="row small" for="showCam" style="display:flex"><input type="checkbox" id="showCam" checked> 내 모습 보기</label>
+    <p class="debug" id="debug">–</p>
+  </div>
+</section>
+
+<!-- 4. 결과 + 돌아보기 -->
+<section id="vDone" class="result" hidden>
+  <div class="panel done">
+    <h2>수고했어요! 🎉</h2>
+    <p class="muted" id="doneSubject"></p>
+    <span class="muted">진짜 공부 시간</span>
+    <div class="time" id="doneFocus">00:00</div>
+    <div class="stats" style="margin:0 auto">
+      <div class="stat"><b id="dSit">00:00</b><span>앉아 있던 시간</span></div>
+      <div class="stat"><b id="dRate">–</b><span>집중률</span></div>
+      <div class="stat"><b id="dBest">00:00</b><span>가장 길게 집중</span></div>
+    </div>
+    <div class="tl-wrap">
+      <div class="tl" id="timeline" role="img" aria-label="시간에 따른 집중 그래프"></div>
+      <div class="tl-axis"><span>시작</span><span id="tlEnd">끝</span></div>
+      <div class="legend">
+        <span><i style="background:var(--good)"></i>집중</span>
+        <span><i style="background:var(--warn)"></i>생각 중</span>
+        <span><i style="background:var(--bad)"></i>딴짓·졸음</span>
+        <span><i style="background:var(--off)"></i>자리 비움</span>
+      </div>
+    </div>
+    <p id="doneSummary"></p>
+  </div>
+  <div class="panel reflect">
+    <h2>🤔 돌아보기</h2>
+    <p class="small muted">짧게 한 줄씩만 써도 좋아요.</p>
+    <label for="q1">언제 가장 집중이 잘 됐지? 이유는 뭘까?
+      <textarea id="q1" rows="2"></textarea></label>
+    <label for="q2">언제 집중이 깨졌지? 그때 무슨 생각을 했지?
+      <textarea id="q2" rows="2"></textarea></label>
+    <label for="q3">다음엔 무엇을 바꿔 볼까?
+      <textarea id="q3" rows="2"></textarea></label>
+    <div class="row">
+      <button id="saveReflectBtn" type="button">저장하고 처음으로</button>
+      <button id="againBtn" type="button" class="ghost">건너뛰기</button>
+    </div>
+  </div>
+</section>
+
+<script type="module">
+  const $ = (id) => document.getElementById(id);
+  const WASM = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
+  const MODEL = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
+  const DEG = 180 / Math.PI;
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  };
+
+  const video = $("video");
+  let landmarker = null;
+  let latest = null;        // 가장 최근 프레임 분석 결과
+  let onFrame = null;       // 지금 화면이 프레임마다 하고 싶은 일
+  let audioCtx = null;
+
+  // ---------- 화면 전환 ----------
+  const views = ["vSetup", "vCalib", "vSession", "vDone"];
+  function show(id, camHolder) {
+    for (const v of views) $(v).hidden = v !== id;
+    $("vRecords").hidden = id !== "vSetup";
+    if (id === "vSetup") renderRecords();
+    window.scrollTo(0, 0);
+    if (camHolder) { $(camHolder).prepend(video); video.hidden = false; }
+  }
+
+  // ---------- 1. 모델 불러오기 ----------
+  (async () => {
+    try {
+      const { FaceLandmarker, FilesetResolver } = await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs");
+      const files = await FilesetResolver.forVisionTasks(WASM);
+      const opts = (delegate) => ({
+        baseOptions: { modelAssetPath: MODEL, delegate }, runningMode: "VIDEO", numFaces: 1,
+        outputFaceBlendshapes: true, outputFacialTransformationMatrixes: true,
+      });
+      try { landmarker = await FaceLandmarker.createFromOptions(files, opts("GPU")); }
+      catch { landmarker = await FaceLandmarker.createFromOptions(files, opts("CPU")); }
+      window.__ready = true;
+      $("setupMsg").textContent = "준비 완료! 카메라를 켜 볼까요?";
+      $("camBtn").disabled = false;
+    } catch (e) {
+      console.error(e);
+      $("setupMsg").innerHTML = '<span class="err">얼굴 인식 도구를 불러오지 못했어요.</span> 인터넷 연결을 확인하고 새로고침해 주세요.';
+    }
+  })();
+
+  // 저장된 설정 불러오기
+  const saved = store.get("sg.settings");
+  if (saved) {
+    if (saved.subject) $("subject").value = saved.subject;
+    if (saved.grace) $("grace").value = String(saved.grace);
+  }
+
+  // ---------- 2. 카메라 ----------
+  $("camBtn").addEventListener("click", async () => {
+    $("camBtn").disabled = true;
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch {}
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }, audio: false });
+      video.srcObject = stream;
+      await video.play();
+      show("vSetup", "setupCam");
+      $("camBtn").hidden = true;
+      $("calibBtn").hidden = false;
+      $("skipCalibBtn").hidden = !store.get("sg.calib");
+      $("setupMsg").textContent = "카메라가 켜졌어요. 이제 내 자세를 알려 줘요.";
+      requestAnimationFrame(loop);
+    } catch (e) {
+      console.error(e);
+      $("setupMsg").innerHTML = '<span class="err">카메라를 켤 수 없어요.</span> 주소창 옆 자물쇠 버튼에서 카메라를 “허용”으로 바꾸고 다시 눌러 주세요.';
+      $("camBtn").disabled = false;
+    }
+  });
+
+  // 프레임 분석 (1초에 약 10번)
+  let lastRun = 0;
+  function loop() {
+    requestAnimationFrame(loop);
+    const now = performance.now();
+    if (!landmarker || now - lastRun < 100 || video.readyState < 2) return;
+    lastRun = now;
+    const res = landmarker.detectForVideo(video, now);
+    latest = readFrame(res);
+    onFrame?.(latest);
+  }
+
+  function readFrame(res) {
+    const face = res.faceLandmarks?.[0];
+    if (!face) return { face: false };
+    const m = res.facialTransformationMatrixes?.[0]?.data;
+    const clamp = (x) => Math.max(-1, Math.min(1, x));
+    const down = m ? Math.asin(clamp(-m[9])) * DEG : 0;   // + 아래
+    const left = m ? Math.asin(clamp(m[8])) * DEG : 0;    // + 내 왼쪽
+    let blink = 0;
+    const bs = res.faceBlendshapes?.[0]?.categories;
+    if (bs) {
+      const s = Object.fromEntries(bs.map((c) => [c.categoryName, c.score]));
+      blink = (s.eyeBlinkLeft + s.eyeBlinkRight) / 2;
+    }
+    return { face: true, down, left, blink };
+  }
+
+  // ---------- 3. 자세 알려주기 ----------
+  const PHASES = [
+    { key: "book", emoji: "📖", title: "책을 보세요", desc: "평소 공부할 때처럼 책을 내려다봐요." },
+    { key: "screen", emoji: "📱", title: "이제 화면을 보세요", desc: "태블릿 화면을 똑바로 봐요." },
+  ];
+  const PHASE_MS = 5000;
+
+  $("calibBtn").addEventListener("click", () => runCalibration());
+  $("skipCalibBtn").addEventListener("click", () => startSession(store.get("sg.calib")));
+
+  function runCalibration() {
+    show("vCalib", "calibCam");
+    const result = {};
+    let i = 0;
+    const nextPhase = () => {
+      const p = PHASES[i];
+      $("calibEmoji").textContent = p.emoji; $("calibTitle").textContent = p.title; $("calibDesc").textContent = p.desc;
+      $("calibMsg").textContent = "";
+      const samples = [];
+      const settleUntil = performance.now() + 1000; // 처음 1초는 자세 잡는 시간
+      const t0 = performance.now();
+      onFrame = (f) => {
+        const el = performance.now() - t0;
+        $("calibCount").textContent = Math.max(0, Math.ceil((PHASE_MS + 1000 - el) / 1000));
+        $("calibBar").style.width = Math.min(100, (el / (PHASE_MS + 1000)) * 100) + "%";
+        if (!f.face) { $("calibMsg").innerHTML = '<span class="err">얼굴이 안 보여요. 카메라 쪽으로 조금 와 주세요.</span>'; }
+        else { $("calibMsg").textContent = ""; if (performance.now() > settleUntil) samples.push(f); }
+        if (el >= PHASE_MS + 1000) {
+          onFrame = null;
+          if (samples.length < 10) {
+            $("calibMsg").innerHTML = '<span class="err">얼굴을 잘 못 봤어요. 다시 해 볼게요!</span>';
+            setTimeout(nextPhase, 1500);
+            return;
+          }
+          const avg = (k) => samples.reduce((a, s) => a + s[k], 0) / samples.length;
+          result[p.key] = { down: avg("down"), left: avg("left"), blink: avg("blink") };
+          i++;
+          if (i < PHASES.length) setTimeout(nextPhase, 600);
+          else finishCalibration(result);
+        }
+      };
+    };
+    nextPhase();
+  }
+
+  function finishCalibration(r) {
+    const calib = {
+      book: r.book, screen: r.screen,
+      // 책을 볼 때 눈꺼풀이 내려가서 '감음'으로 착각하지 않도록 기준을 사람마다 맞춤
+      blinkLimit: Math.min(0.9, Math.max(0.55, r.book.blink + 0.25)),
+      close: Math.hypot(r.book.down - r.screen.down, r.book.left - r.screen.left) < 6,
+    };
+    store.set("sg.calib", calib);
+    startSession(calib);
+  }
+
+  // ---------- 4. 공부 중 ----------
+  // 한 프레임 판정: focus(책) / screen(화면) / away(딴 데) / closed(눈 감음) / noface(얼굴 없음)
+  function classify(f, c) {
+    if (!f.face) return "noface";
+    if (f.blink > c.blinkLimit) return "closed";
+    const dBook = Math.hypot(f.down - c.book.down, f.left - c.book.left);
+    const dScr = Math.hypot(f.down - c.screen.down, f.left - c.screen.left);
+    if (Math.abs(f.left - c.book.left) > 25) return "away";
+    if (!c.close && dScr < dBook) return "screen";
+    return dBook < 25 ? "focus" : "away";
+  }
+
+  const S = {};
+  let tickTimer = null;
+
+  function startSession(calib) {
+    const settings = { subject: $("subject").value, grace: Number($("grace").value) };
+    store.set("sg.settings", settings);
+    Object.assign(S, {
+      calib, ...settings,
+      startedAt: Date.now(), running: true, paused: false,
+      focusSec: 0, sitSec: 0, pending: 0, nonFocusRun: 0, noFaceRun: 0, closedRun: 0,
+      awayCount: 0, wasRed: false, votes: [], touchedAt: 0,
+      timeline: [], // 1초마다 상태 기록 (3단계 그래프용)
+    });
+    $("sessSubject").textContent = settings.subject;
+    $("pauseBtn").textContent = "잠깐 쉬기";
+    show("vSession", $("showCam").checked ? "sessCam" : null);
+    if (!$("showCam").checked) video.hidden = true;
+    onFrame = (f) => { S.votes.push(classify(f, calib)); S.last = f; };
+    clearInterval(tickTimer);
+    tickTimer = setInterval(tick, 1000);
+    keepAwake();
+    render("focus");
+  }
+
+  function tick() {
+    if (!S.running || S.paused) return;
+    // 이번 1초 동안의 판정 중 가장 많은 것
+    let sec;
+    if (document.hidden) sec = "hidden";
+    else if (Date.now() - S.touchedAt < 2000) sec = "screen";
+    else if (!S.votes.length) sec = "noface";
+    else {
+      const n = {}; for (const v of S.votes) n[v] = (n[v] || 0) + 1;
+      sec = Object.entries(n).sort((a, b) => b[1] - a[1])[0][0];
+    }
+    S.votes = [];
+
+    S.noFaceRun = sec === "noface" ? S.noFaceRun + 1 : 0;
+    S.closedRun = sec === "closed" ? S.closedRun + 1 : 0;
+
+    // 30초 넘게 얼굴이 없으면 자리 비움 → 시간 멈춤
+    if (S.noFaceRun >= 30) { S.timeline.push("absent"); S.pending = 0; render("absent"); return; }
+
+    S.sitSec++;
+    let shown;
+    if (sec === "focus") {
+      S.focusSec += 1 + S.pending; S.pending = 0; S.nonFocusRun = 0; S.wasRed = false;
+      shown = "focus";
+    } else if (sec === "closed" && S.closedRun >= 2) {
+      S.pending = 0; S.nonFocusRun++;
+      shown = "sleepy";
+      if (S.closedRun === 3) beep();
+    } else if (sec === "screen" || sec === "hidden") {
+      S.pending = 0; S.nonFocusRun++;
+      shown = "screen";
+    } else {
+      S.nonFocusRun++;
+      if (S.nonFocusRun <= S.grace) { S.pending++; shown = "think"; }
+      else { S.pending = 0; shown = "away"; }
+    }
+    const red = shown === "away" || shown === "sleepy" || shown === "screen";
+    if (red && !S.wasRed) S.awayCount++;
+    S.wasRed = red;
+    S.timeline.push(shown);
+    render(shown);
+  }
+
+  const STATE_TXT = {
+    focus: "집중하고 있어요", think: "잠깐 생각 중이에요", away: "딴 데 보고 있어요",
+    sleepy: "졸려요? 기지개 켜요!", screen: "화면을 보고 있어요", absent: "자리 비움 · 시간 멈춤", paused: "쉬는 중",
+  };
+  const mmss = (s) => {
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+    const p = (n) => String(n).padStart(2, "0");
+    return h ? `${h}:${p(m)}:${p(x)}` : `${p(m)}:${p(x)}`;
+  };
+  function render(state) {
+    $("stateBox").dataset.s = state;
+    $("stateTxt").textContent = STATE_TXT[state];
+    $("focusTime").textContent = mmss(S.focusSec);
+    $("sitTime").textContent = mmss(S.sitSec);
+    $("rate").textContent = S.sitSec ? Math.round((S.focusSec / S.sitSec) * 100) + "%" : "–";
+    $("awayCount").textContent = S.awayCount;
+    const f = S.last;
+    $("debug").textContent = f?.face
+      ? `고개 위아래 ${f.down.toFixed(0)}° (책 ${S.calib.book.down.toFixed(0)}°) · 좌우 ${f.left.toFixed(0)}° · 눈 감김 ${Math.round(f.blink * 100)}%`
+      : "얼굴을 찾는 중";
+  }
+
+  // 화면을 만지면 '폰 사용'으로 봄 (버튼 제외)
+  document.addEventListener("pointerdown", (e) => {
+    if (S.running && !S.paused && !e.target.closest("button, input, label")) S.touchedAt = Date.now();
+  });
+
+  $("pauseBtn").addEventListener("click", () => {
+    S.paused = !S.paused;
+    S.votes = []; S.pending = 0; S.nonFocusRun = 0;
+    $("pauseBtn").textContent = S.paused ? "다시 공부하기" : "잠깐 쉬기";
+    render(S.paused ? "paused" : "focus");
+  });
+
+  $("showCam").addEventListener("change", (e) => {
+    if (e.target.checked) { $("sessCam").prepend(video); video.hidden = false; }
+    else video.hidden = true;
+  });
+
+  $("stopBtn").addEventListener("click", () => {
+    S.running = false; clearInterval(tickTimer); onFrame = null;
+    // 기록 저장 (3단계에서 결과 화면에 사용)
+    const rec = {
+      subject: S.subject, startedAt: S.startedAt, endedAt: Date.now(),
+      focusSec: S.focusSec, sitSec: S.sitSec, awayCount: S.awayCount, timeline: S.timeline,
+    };
+    rec.bestSec = longestFocus(S.timeline);
+    const all = store.get("sg.records") || [];
+    all.push(rec); store.set("sg.records", all.slice(-200));
+    showResult(rec);
+  });
+
+  // 가장 길게 집중한 시간 (생각 중도 이어진 것으로 봄)
+  function longestFocus(tl) {
+    // 생각 중은 다시 책으로 돌아왔을 때만 이어진 것으로 셈
+    let best = 0, run = 0, think = 0;
+    for (const s of tl) {
+      if (s === "focus") { run += 1 + think; think = 0; best = Math.max(best, run); }
+      else if (s === "think") think++;
+      else { run = 0; think = 0; }
+    }
+    return best;
+  }
+
+  const TL_COLOR = { focus: "var(--good)", think: "var(--warn)", away: "var(--bad)", sleepy: "var(--bad)", screen: "var(--bad)", absent: "var(--off)" };
+  function drawTimeline(tl) {
+    const box = $("timeline"); box.textContent = "";
+    if (!tl.length) return;
+    const n = Math.min(60, tl.length), size = tl.length / n;
+    for (let i = 0; i < n; i++) {
+      const part = tl.slice(Math.floor(i * size), Math.floor((i + 1) * size)) ;
+      const cnt = {}; for (const s of part) cnt[s] = (cnt[s] || 0) + 1;
+      const top = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0]?.[0] || "absent";
+      const seg = document.createElement("i");
+      seg.style.background = TL_COLOR[top] || "var(--off)";
+      box.append(seg);
+    }
+    $("tlEnd").textContent = mmss(tl.length);
+  }
+
+  function showResult(rec) {
+    $("doneSubject").textContent = rec.subject;
+    $("doneFocus").textContent = mmss(rec.focusSec);
+    $("dSit").textContent = mmss(rec.sitSec);
+    const rate = rec.sitSec ? Math.round((rec.focusSec / rec.sitSec) * 100) : 0;
+    $("dRate").textContent = rec.sitSec ? rate + "%" : "–";
+    $("dBest").textContent = mmss(rec.bestSec);
+    let msg = rate >= 80 ? "대단해요! 정말 집중을 잘했어요. 👏" : rate >= 50 ? "좋아요! 조금만 더 하면 집중 고수예요. 💪" : "괜찮아요. 집중이 깨진 순간을 돌아보면 다음엔 더 잘할 수 있어요. 🌱";
+    $("doneSummary").textContent = `딴짓 ${rec.awayCount}번 · ${msg}`;
+    drawTimeline(rec.timeline);
+    for (const q of ["q1", "q2", "q3"]) $(q).value = "";
+    show("vDone");
+    video.hidden = true;
+  }
+
+  function goHome() {
+    show("vSetup", "setupCam");
+    $("skipCalibBtn").hidden = !store.get("sg.calib");
+  }
+  $("againBtn").addEventListener("click", goHome);
+  $("saveReflectBtn").addEventListener("click", () => {
+    const all = store.get("sg.records") || [];
+    const last = all[all.length - 1];
+    if (last) {
+      last.reflect = ["q1", "q2", "q3"].map((q) => $(q).value.trim());
+      store.set("sg.records", all);
+    }
+    goHome();
+  });
+
+  // ---------- 내 기록 ----------
+  const dayKey = (t) => { const d = new Date(t); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+  const mins = (s) => s >= 3600 ? `${Math.floor(s / 3600)}시간 ${Math.floor((s % 3600) / 60)}분` : `${Math.floor(s / 60)}분`;
+  function renderRecords() {
+    const all = store.get("sg.records") || [];
+    const now = Date.now(), today = dayKey(now);
+    const monday = new Date(); monday.setHours(0, 0, 0, 0); monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+    let todaySec = 0, weekSec = 0;
+    const days = new Set();
+    for (const r of all) {
+      if (dayKey(r.startedAt) === today) todaySec += r.focusSec;
+      if (r.startedAt >= monday.getTime()) weekSec += r.focusSec;
+      if (r.focusSec >= 60) days.add(dayKey(r.startedAt));
+    }
+    // 연속 공부한 날 (오늘 아직 안 했으면 어제부터 셈)
+    let streak = 0; const d = new Date();
+    if (!days.has(dayKey(d))) d.setDate(d.getDate() - 1);
+    while (days.has(dayKey(d))) { streak++; d.setDate(d.getDate() - 1); }
+    $("todayTotal").textContent = mins(todaySec);
+    $("weekTotal").textContent = mins(weekSec);
+    $("streak").textContent = streak + "일";
+
+    const list = $("recList"); list.textContent = "";
+    $("emptyRec").hidden = all.length > 0;
+    for (const r of all.slice(-10).reverse()) {
+      const li = document.createElement("li");
+      const dt = new Date(r.startedAt);
+      const rate = r.sitSec ? Math.round((r.focusSec / r.sitSec) * 100) : 0;
+      const a = document.createElement("span");
+      a.textContent = `${dt.getMonth() + 1}/${dt.getDate()} ${String(dt.getHours()).padStart(2, "0")}:${String(dt.getMinutes()).padStart(2, "0")} · ${r.subject} · 집중률 ${rate}%`;
+      const t = document.createElement("span"); t.className = "t"; t.textContent = mmss(r.focusSec);
+      li.append(a, t);
+      const next = r.reflect?.[2];
+      if (next) { const rr = document.createElement("span"); rr.className = "r"; rr.textContent = "다음엔: " + next; li.append(rr); }
+      list.append(li);
+    }
+  }
+  let clearArmed = null;
+  $("clearBtn").addEventListener("click", () => {
+    if (!clearArmed) {
+      $("clearBtn").textContent = "정말 지울까요? 한 번 더 누르기";
+      clearArmed = setTimeout(() => { clearArmed = null; $("clearBtn").textContent = "기록 지우기"; }, 4000);
+      return;
+    }
+    clearTimeout(clearArmed); clearArmed = null;
+    try { localStorage.removeItem("sg.records"); } catch {}
+    $("clearBtn").textContent = "기록 지우기";
+    renderRecords();
+  });
+  renderRecords();
+
+  // ---------- 도우미 ----------
+  function beep() {
+    try { navigator.vibrate?.([300, 150, 300]); } catch {}
+    if (!audioCtx) return;
+    try {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.frequency.value = 880; g.gain.value = 0.15;
+      o.connect(g).connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + 0.4);
+    } catch {}
+  }
+  let wakeLock = null;
+  async function keepAwake() { try { wakeLock = await navigator.wakeLock?.request("screen"); } catch {} }
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && S.running) keepAwake(); });
+
+  // ---------- 공유 QR ----------
+  const appUrl = () => location.origin + location.pathname.replace(/index\.html$/, "");
+  $("shareBtn").addEventListener("click", () => {
+    const url = appUrl();
+    $("shareUrl").textContent = url;
+    try {
+      const qr = window.qrcode(0, "M"); qr.addData(url); qr.make();
+      $("qrBox").innerHTML = qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+    } catch { $("qrBox").textContent = "QR 코드를 만들지 못했어요. 아래 주소를 알려 주세요."; }
+    $("shareModal").hidden = false;
+    $("closeShare").focus();
+  });
+  const closeShare = () => { $("shareModal").hidden = true; };
+  $("closeShare").addEventListener("click", closeShare);
+  $("shareModal").addEventListener("click", (e) => { if (e.target.id === "shareModal") closeShare(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeShare(); });
+  $("copyBtn").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(appUrl()); $("copyBtn").textContent = "복사했어요!"; }
+    catch { getSelection().selectAllChildren($("shareUrl")); $("copyBtn").textContent = "주소를 길게 눌러 복사하세요"; }
+    setTimeout(() => { $("copyBtn").textContent = "주소 복사"; }, 2500);
+  });
+
+  // 테스트용
+  window.__sg = { S, classify, tick, startSession };
+</script>
+</body>
+</html>
